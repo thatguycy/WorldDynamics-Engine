@@ -1,0 +1,8 @@
+name: WorldDynamics Engine
+version: '${project.version}'
+main: com.thatguycy.worlddynamicsengine.WorldDynamicsEngine
+api-version: '1.20'
+softdepend: [Towny, Vault]
+authors: [thatguycy]
+description: WorldDynamics Engine is a Minecraft plugin that adds dynamic policies to your world!
+website: https://github.com/thatguycy/WorldDynamics-Engine
