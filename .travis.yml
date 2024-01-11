@@ -1,0 +1,4 @@
+language: java
+jdk:
+  - openjdk17 # or the version you are using
+script: mvn clean verify # This will run `mvn clean verify` command as your build script
