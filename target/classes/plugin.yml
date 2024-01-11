@@ -1,4 +1,4 @@
-name: WorldDynamics Engine
+name: WorldDynamicsEngine
 version: '0.1'
 main: com.thatguycy.worlddynamicsengine.WorldDynamicsEngine
 api-version: '1.20'

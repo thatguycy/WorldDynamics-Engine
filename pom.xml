@@ -9,7 +9,7 @@
   <version>0.1</version>
   <packaging>jar</packaging>
 
-  <name>WorldDynamics Engine</name>
+  <name>WorldDynamicsEngine</name>
 
     <description>WorldDynamics Engine is a Minecraft plugin that adds dynamic policies to your world!</description>
     <properties>
