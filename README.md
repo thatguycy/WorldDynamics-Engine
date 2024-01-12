@@ -6,6 +6,8 @@
 
 ## Description
 
+More than just a Towny Addon, it's a **Towny Essential Upgrade**!
+
 WorldDynamics Engine is a sophisticated roleplay plugin designed for geopolitical servers. It allows players to immerse themselves in dynamic political landscapes, manage resources, engage in diplomacy, and shape the world with their decisions.
 
 <table>
