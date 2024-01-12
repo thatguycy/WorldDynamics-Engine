@@ -17,12 +17,14 @@ public class WDETabCompleter implements TabCompleter {
         if (command.getName().equalsIgnoreCase("wde")) {
             if (args.length == 1) {
                 // First argument completion (subcommands)
-                return getListOfStringsMatchingLastWord(args, "government", "help", "nation");
+                return getListOfStringsMatchingLastWord(args, "government", "help", "nation", "army");
             } else if (args.length == 2 && args[0].equalsIgnoreCase("government")) {
                 // Second argument completion for /wde government
-                return getListOfStringsMatchingLastWord(args, "settype", "info");
+                return getListOfStringsMatchingLastWord(args, "settype", "info", "leave", "setleader", "addmember", "kickmember");
             } else if (args.length == 2 && args[0].equalsIgnoreCase("nation")) {
                 return getListOfNations();
+            } else if (args.length == 2 && args[0].equalsIgnoreCase("army")) {
+                return getListOfStringsMatchingLastWord(args, "leave", "setleader", "addmember", "kickmember");
             } else if (args.length == 3 && args[0].equalsIgnoreCase("government") && args[1].equalsIgnoreCase("settype")) {
                 // Third argument completion for /wde government settype
                 return getListOfGovernmentTypes(args);

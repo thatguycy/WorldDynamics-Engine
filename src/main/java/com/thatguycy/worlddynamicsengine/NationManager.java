@@ -1,6 +1,7 @@
 package com.thatguycy.worlddynamicsengine;
 
 import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.object.Resident;
 import com.thatguycy.worlddynamicsengine.GovernmentType;
 import com.thatguycy.worlddynamicsengine.NationProperties;
 import org.bukkit.ChatColor;
@@ -11,9 +12,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.List;
+import java.util.stream.Collectors;
 public class NationManager {
 
     private JavaPlugin plugin;
@@ -32,18 +35,39 @@ public class NationManager {
     private void loadNations() {
         if (nationsConfig.isConfigurationSection("nations")) {
             for (String nationName : nationsConfig.getConfigurationSection("nations").getKeys(false)) {
+                // Load GovernmentType
                 String govTypeStr = nationsConfig.getString("nations." + nationName + ".GovernmentType", "DEMOCRACY");
                 GovernmentType govType = GovernmentType.valueOf(govTypeStr);
-                // Load other properties as needed
-                nations.put(nationName, new NationProperties(govType));
+
+                // Load Army Leader and Members
+                String armyLeaderName = nationsConfig.getString("nations." + nationName + ".ArmyLeader", null);
+                Resident armyLeader = armyLeaderName != null ? TownyUniverse.getInstance().getResident(armyLeaderName) : null;
+                List<String> armyMembers = nationsConfig.getStringList("nations." + nationName + ".ArmyMembers");
+
+                NationProperties properties = new NationProperties(govType);
+                properties.setArmyLeader(armyLeader);
+                armyMembers.forEach(properties::addArmyMember);
+
+                nations.put(nationName, properties);
             }
         }
     }
 
     public void saveNations() {
         for (Map.Entry<String, NationProperties> entry : nations.entrySet()) {
-            nationsConfig.set("nations." + entry.getKey() + ".GovernmentType", entry.getValue().getGovernmentType().name());
-            // Save other properties
+            String nationName = entry.getKey();
+            NationProperties properties = entry.getValue();
+
+            // Save GovernmentType
+            nationsConfig.set("nations." + nationName + ".GovernmentType", properties.getGovernmentType().name());
+
+            // Save Army Leader and Members
+            if (properties.getArmyLeader() != null) {
+                nationsConfig.set("nations." + nationName + ".ArmyLeader", properties.getArmyLeader().getName());
+            }
+            nationsConfig.set("nations." + nationName + ".ArmyMembers", new ArrayList<>(properties.getArmyMembers()));
+
+            // Save other properties as needed
         }
         try {
             nationsConfig.save(nationsFile);
@@ -73,6 +97,15 @@ public class NationManager {
                 // Display nation info from NationManager
                 String governmentType = properties.getGovernmentType() != null ? properties.getGovernmentType().name() : "none";
                 sender.sendMessage(ChatColor.YELLOW + "Government Type: " + ChatColor.WHITE + governmentType);
+                String leaderName = properties.getArmyLeader() != null ? properties.getArmyLeader().getName() : "None";
+                sender.sendMessage(ChatColor.YELLOW + "Army Leader: " + ChatColor.WHITE + leaderName);
+                String members = properties.getArmyMembers().stream().collect(Collectors.joining(", "));
+                sender.sendMessage(ChatColor.YELLOW + "Army Members: " + ChatColor.WHITE + (members.isEmpty() ? "None" : members));
+                String gleaderName = properties.getGovernmentLeader() != null ? properties.getGovernmentLeader().getName() : "None";
+                sender.sendMessage(ChatColor.YELLOW + "Government Leader: " + ChatColor.WHITE + gleaderName);
+                String gmembers = properties.getGovernmentMembers().stream().collect(Collectors.joining(", "));
+                sender.sendMessage(ChatColor.YELLOW + "Government Members: " + ChatColor.WHITE + (gmembers.isEmpty() ? "None" : gmembers));
+
             } else {
                 // Nation exists in Towny but not in WDE
                 sender.sendMessage(ChatColor.RED + "This nation exists, but does not have any attributes assigned by WDE.");

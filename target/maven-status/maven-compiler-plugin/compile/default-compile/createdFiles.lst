@@ -3,5 +3,8 @@ com\thatguycy\worlddynamicsengine\NationManager.class
 com\thatguycy\worlddynamicsengine\NationProperties.class
 com\thatguycy\worlddynamicsengine\WDETabCompleter.class
 com\thatguycy\worlddynamicsengine\WorldDynamicsEngine.class
+com\thatguycy\worlddynamicsengine\OrganizationManager.class
+com\thatguycy\worlddynamicsengine\OrganizationProperties.class
 com\thatguycy\worlddynamicsengine\GovernmentType.class
+com\thatguycy\worlddynamicsengine\OrganizationProperties$OrganizationType.class
 com\thatguycy\worlddynamicsengine\WDECommandExecutor.class

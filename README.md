@@ -48,6 +48,8 @@ WorldDynamics Engine is a sophisticated roleplay plugin designed for geopolitica
 ## Installation
 
 Instructions on how to install the WorldDynamics Engine plugin.
+- **1)** Place WorldDynamicsEngine-X.X.jar in the "plugins" folder.
+- **2)** Install [TownyAdvanced](https://www.spigotmc.org/resources/towny-advanced.72694/) and [Vault](https://www.spigotmc.org/resources/vault.34315/), these are both **essential**.
 
 ## Usage
 
