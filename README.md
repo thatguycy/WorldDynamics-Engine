@@ -59,4 +59,4 @@ We welcome contributions to the WorldDynamics Engine! Please read our [CONTRIBUT
 
 ## License
 
-This project is licensed under the [Your License Name] - see the [LICENSE](https://github.com/thatguycy/WorldDynamics-Engine/blob/main/LICENSE) file for details.
+This project is licensed under the [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) - see the [LICENSE](https://github.com/thatguycy/WorldDynamics-Engine/blob/main/LICENSE) file for details.
