@@ -1,1 +1,7 @@
+com\thatguycy\worlddynamicsengine\WorldDynamicsEngine$1.class
+com\thatguycy\worlddynamicsengine\NationManager.class
+com\thatguycy\worlddynamicsengine\NationProperties.class
+com\thatguycy\worlddynamicsengine\WDETabCompleter.class
 com\thatguycy\worlddynamicsengine\WorldDynamicsEngine.class
+com\thatguycy\worlddynamicsengine\GovernmentType.class
+com\thatguycy\worlddynamicsengine\WDECommandExecutor.class

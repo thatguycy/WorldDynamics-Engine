@@ -6,6 +6,8 @@
 
 ## Description
 
+More than just a Towny Addon, it's a **Towny Essential Upgrade**!
+
 WorldDynamics Engine is a sophisticated roleplay plugin designed for geopolitical servers. It allows players to immerse themselves in dynamic political landscapes, manage resources, engage in diplomacy, and shape the world with their decisions.
 
 <table>
@@ -57,4 +59,4 @@ We welcome contributions to the WorldDynamics Engine! Please read our [CONTRIBUT
 
 ## License
 
-This project is licensed under the [Your License Name] - see the [LICENSE](https://github.com/thatguycy/WorldDynamics-Engine/blob/main/LICENSE) file for details.
+This project is licensed under the [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) - see the [LICENSE](https://github.com/thatguycy/WorldDynamics-Engine/blob/main/LICENSE) file for details.

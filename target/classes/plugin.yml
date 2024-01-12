@@ -6,3 +6,12 @@ softdepend: [Towny, Vault]
 authors: [thatguycy]
 description: WorldDynamics Engine is a Minecraft plugin that adds dynamic policies to your world!
 website: https://github.com/thatguycy/WorldDynamics-Engine
+commands:
+  wde:
+    description: Main command for WorldDynamics Engine
+    usage: /<command>
+    aliases: [worlddynamics, wde, worlddynamicsengine, worldengine]
+permissions:
+  wde.help:
+    description: Allows using the help subcommand of /wde
+    default: true
