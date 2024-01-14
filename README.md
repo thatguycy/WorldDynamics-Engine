@@ -32,32 +32,33 @@ WorldDynamics Engine is a sophisticated roleplay plugin designed for geopolitica
 </table>
 
 
-## Features
+## Current Features
 
-- Dynamic Political Borders: Create and modify nation borders.
-- Resource Management: Control and trade unique resources.
-- Diplomatic Systems: Engage in treaties, alliances, and negotiations.
-- Custom Government Structures: Choose from various government types.
-- Advanced Economic System: Manage a complex economy and trade.
-- Military and Defense Mechanics: Build armies and strategize defenses.
-- Cultural Influence: Spread your nation's culture to others.
-- Environmental and Technological Factors: Address climate change and technological advancements.
-- Espionage: Conduct intelligence and counterintelligence operations.
-- International Organizations: Participate in or form global alliances.
+- **Custom Government Structures**: Choose from a variety of government forms to shape the political structure of your nations.
+- **Dynamic Organization Management**: Create, manage, and dissolve various types of organizations, including both business entities and governmental bodies.
+- **Financial Management for Organizations**: Execute financial transactions within organizations, facilitating deposits and withdrawals to manage funds effectively.
+- **Robust Member Management**: Empower organization leaders with the ability to add or remove members, offering significant control over their internal structure.
+- **Detailed Information Display**: Access comprehensive information about nations and organizations, enhancing transparency and strategic planning.
+- **Flexible Command System**: Engage with an intuitive and adaptable command system, tailored to facilitate user interaction with the plugin’s diverse functionalities.
+- **International Organizations**: Participate in global alliances and international bodies, extending influence beyond national borders.
+
+## Future Features
+
+- **Dynamic Political Borders**: Strategically create and adjust nation borders, reflecting the evolving geopolitical landscape.
+- **Advanced Resource Management**: Control and trade unique resources, introducing an element of economic strategy and resource conservation.
+- **Diplomatic Engagement Systems**: Engage in complex treaties, form alliances, and conduct high-stakes negotiations to influence international relations.
+- **Sophisticated Economic System**: Develop and manage a multi-faceted economy, encompassing trade networks, market dynamics, and financial policies.
+- **Military Strategy and Defense**: Build formidable armies, strategize defensive tactics, and engage in warfare to protect and expand your nation.
+- **Cultural Expansion and Influence**: Spread your nation’s cultural influence, shaping global cultural trends and interactions.
+- **Environmental and Technological Dynamics**: Address challenges posed by climate change and technological advancements, adding a layer of environmental strategy.
+- **Espionage Mechanics**: Implement espionage and counterintelligence operations, introducing a stealthy aspect of information warfare and intrigue.
+- **Global Impact of International Organizations**: Influence world affairs by participating in or establishing international organizations, shaping global policy and diplomacy.
 
 ## Installation
 
 Instructions on how to install the WorldDynamics Engine plugin.
 - **1)** Place WorldDynamicsEngine-X.X.jar in the "plugins" folder.
 - **2)** Install [TownyAdvanced](https://www.spigotmc.org/resources/towny-advanced.72694/) and [Vault](https://www.spigotmc.org/resources/vault.34315/), these are both **essential**.
-
-## Usage
-
-Guidelines on how to use the plugin, including basic commands and configuration options.
-
-## Contributing
-
-We welcome contributions to the WorldDynamics Engine! Please read our [CONTRIBUTING.md](https://github.com/thatguycy/WorldDynamics-Engine/blob/main/CONTRIBUTING.MD) for details on our code of conduct and the process for submitting pull requests.
 
 ## License
 

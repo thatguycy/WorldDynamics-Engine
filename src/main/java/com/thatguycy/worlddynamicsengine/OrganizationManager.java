@@ -30,6 +30,8 @@ public class OrganizationManager {
                 OrganizationProperties orgProps = new OrganizationProperties(orgName, leader, type);
                 orgProps.getMembers().addAll(members);
                 organizations.put(orgName, orgProps);
+                double balance = organizationsConfig.getDouble("organizations." + orgName + ".balance", 0.0);
+                orgProps.setBalance(balance);
             }
         }
     }
@@ -42,6 +44,8 @@ public class OrganizationManager {
             organizationsConfig.set("organizations." + orgName + ".leader", orgProps.getLeader());
             organizationsConfig.set("organizations." + orgName + ".members", new ArrayList<>(orgProps.getMembers()));
             organizationsConfig.set("organizations." + orgName + ".type", orgProps.getType().name());
+            organizationsConfig.set("organizations." + entry.getKey() + ".balance", entry.getValue().getBalance());
+
         }
 
         try {
@@ -65,6 +69,10 @@ public class OrganizationManager {
 
     public OrganizationProperties getOrganization(String name) {
         return organizations.get(name);
+    }
+
+    public Map<String, OrganizationProperties> getOrganizations() {
+        return new HashMap<>(organizations);
     }
 
     // Additional methods for saving and loading organization data

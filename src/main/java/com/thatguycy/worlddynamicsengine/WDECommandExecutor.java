@@ -1,4 +1,5 @@
 package com.thatguycy.worlddynamicsengine;
+import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Nation;
@@ -48,7 +49,7 @@ public class WDECommandExecutor implements CommandExecutor {
                         String nationName = args[1];
                         nationManager.displayNationInfo(sender, nationName);
                     } else {
-                        sender.sendMessage(ChatColor.RED + "Usage: /wde nationinfo <nation>");
+                        sender.sendMessage(ChatColor.RED + "Usage: /wde nation info <nation>");
                     }
                     return true;
                 default:
@@ -69,11 +70,24 @@ public class WDECommandExecutor implements CommandExecutor {
         switch (orgCommand) {
             case "create":
                 if (args.length < 4) {
-                    player.sendMessage(ChatColor.RED + "Usage: /wde org create <name> <BUSINESS/INTERNATIONAL>");
+                    player.sendMessage(ChatColor.RED + "Usage: /wde org create <name> <BUSINESS/INTERNATIONAL/GOVERNMENTAL>");
                     return true;
                 }
                 return handleCreateOrganization(player, args);
-            // Add other organization subcommands here
+            case "info":
+                return handleOrgInfo(player, args);
+            case "deposit":
+                return handleOrgDeposit(player, args);
+            case "withdraw":
+                return handleOrgWithdraw(player, args);
+            case "join":
+                return handleOrgJoin(player, args);
+            case "leave":
+                return handleOrgLeave(player, args);
+            case "addmember":
+                return handleOrgAddMember(player, args);
+            case "kickmember":
+                return handleOrgKickMember(player, args);
             default:
                 player.sendMessage(ChatColor.RED + "Unknown organization subcommand.");
                 return true;
@@ -82,20 +96,28 @@ public class WDECommandExecutor implements CommandExecutor {
 
     private boolean displayHelp(CommandSender sender) {
         sender.sendMessage(ChatColor.YELLOW + "WorldDynamics Engine Commands:");
-        sender.sendMessage(ChatColor.GOLD + "/wde government settype <type> - Set your nation's government type.");
-        sender.sendMessage(ChatColor.GOLD + "/wde government info - View your nation's government type.");
+        sender.sendMessage(ChatColor.BLUE + "----------------[ Gov Commands ]----------------");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government settype <type> -" + ChatColor.WHITE + " Set your nation's government type.");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government info -" + ChatColor.WHITE + " View your nation's government type.");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government setleader <player> -" + ChatColor.WHITE + " Set the leader of your nation's government.");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government addmember <player> -" + ChatColor.WHITE + " Add a member to your nation's government.");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government kickmember <player> -" + ChatColor.WHITE + " Remove a member from your nation's government.");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government leave -" + ChatColor.WHITE + " Leave your nation's government.");
+        sender.sendMessage(ChatColor.BLUE + "----------------[ Army Commands ]----------------");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army setleader <player> -" + ChatColor.WHITE + " Set the leader of your nation's army.");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army addmember <player> -" + ChatColor.WHITE + " Add a member to your nation's army.");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army kickmember <player> -" + ChatColor.WHITE + " Remove a member from your nation's army.");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army leave -" + ChatColor.WHITE + " Leave your nation's army.");
+        sender.sendMessage(ChatColor.BLUE + "----------------[ Org Commands ]----------------");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org create <name> <type> -" + ChatColor.WHITE + " Create a new organization.");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org deposit <orgname> <amount> -" + ChatColor.WHITE + " Deposit money into an organization.");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org withdraw <orgname> <amount> -" + ChatColor.WHITE + " Withdraw money from an organization.");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org join <orgname> -" + ChatColor.WHITE + " Join an organization.");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org leave <orgname> -" + ChatColor.WHITE + " Leave an organization.");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org addmember <orgname> <user> -" + ChatColor.WHITE + " Add a member to a GOVERNMENTAL organization (OrgLeader only).");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org kickmember <orgname> <user> -" + ChatColor.WHITE + " Remove a member from an organization (OrgLeader only).");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org info <orgname> -" + ChatColor.WHITE + "Display information about an organization.");
 
-        // Army related commands
-        sender.sendMessage(ChatColor.GOLD + "/wde army setleader <player> - Set the leader of your nation's army.");
-        sender.sendMessage(ChatColor.GOLD + "/wde army addmember <player> - Add a member to your nation's army.");
-        sender.sendMessage(ChatColor.GOLD + "/wde army kickmember <player> - Remove a member from your nation's army.");
-        sender.sendMessage(ChatColor.GOLD + "/wde army leave - Leave your nation's army.");
-
-        // Government related commands
-        sender.sendMessage(ChatColor.GOLD + "/wde government setleader <player> - Set the leader of your nation's government.");
-        sender.sendMessage(ChatColor.GOLD + "/wde government addmember <player> - Add a member to your nation's government.");
-        sender.sendMessage(ChatColor.GOLD + "/wde government kickmember <player> - Remove a member from your nation's government.");
-        sender.sendMessage(ChatColor.GOLD + "/wde government leave - Leave your nation's government.");
         return true;
     }
 
@@ -558,6 +580,11 @@ public class WDECommandExecutor implements CommandExecutor {
             return true;
         }
 
+        if (orgType == OrganizationProperties.OrganizationType.GOVERNMENTAL && !isAnyNationLeader(player)) {
+            player.sendMessage(ChatColor.RED + "Only nation leaders can create INTERNATIONAL organizations.");
+            return true;
+        }
+
         // Check if player has enough money
         if (economy.getBalance(player) < cost) {
             player.sendMessage(ChatColor.RED + "You need $" + cost + " to create an organization.");
@@ -588,5 +615,277 @@ public class WDECommandExecutor implements CommandExecutor {
             return false;
         }
     }
+
+    private boolean handleCheckOrgBalance(Player player, String[] args) {
+        if (args.length < 2) {
+            player.sendMessage(ChatColor.RED + "Usage: /wde org balance <orgName>");
+            return true;
+        }
+
+        String orgName = args[1];
+        OrganizationProperties orgProps = organizationManager.getOrganization(orgName);
+        if (orgProps == null) {
+            player.sendMessage(ChatColor.RED + "Organization not found.");
+            return true;
+        }
+
+        player.sendMessage(ChatColor.GREEN + "The balance of " + orgName + " is $" + orgProps.getBalance());
+        return true;
+    }
+
+    private boolean handleOrgInfo(CommandSender sender, String[] args) {
+        if (args.length < 2) {
+            sender.sendMessage(ChatColor.RED + "Usage: /wde org info <orgName>");
+            return true;
+        }
+
+        String orgName = args[2];
+        displayOrgInfo(sender, orgName);
+        return true;
+    }
+
+    public void displayOrgInfo(CommandSender sender, String orgName) {
+        OrganizationProperties orgProps = organizationManager.getOrganization(orgName);
+
+        // Header
+        String header = ChatColor.GOLD + "---------------=[" + ChatColor.GREEN + " " + orgName + " " + ChatColor.GOLD + "]=---------------";
+        sender.sendMessage(header);
+
+        if (orgProps != null) {
+            // Display organization info
+            String orgType = orgProps.getType() != null ? orgProps.getType().name() : "Unknown";
+            sender.sendMessage(ChatColor.YELLOW + "Organization Type: " + ChatColor.WHITE + orgType);
+            String leaderName = orgProps.getLeader() != null ? orgProps.getLeader() : "None";
+            sender.sendMessage(ChatColor.YELLOW + "Leader: " + ChatColor.WHITE + leaderName);
+            String members = String.join(", ", orgProps.getMembers());
+            sender.sendMessage(ChatColor.YELLOW + "Members: " + ChatColor.WHITE + (members.isEmpty() ? "None" : members));
+            String balance = String.format("$%.2f", orgProps.getBalance());
+            sender.sendMessage(ChatColor.YELLOW + "Balance: " + ChatColor.WHITE + balance);
+
+        } else {
+            // Organization does not exist
+            sender.sendMessage(ChatColor.RED + "Organization does not exist.");
+        }
+    }
+    private boolean handleOrgDeposit(Player player, String[] args) {
+        if (args.length < 4) {
+            player.sendMessage(ChatColor.RED + "Usage: /wde org deposit <orgName> <amount>");
+            return true;
+        }
+
+        String orgName = args[2];
+        double amount;
+
+        try {
+            amount = Double.parseDouble(args[3]);
+            if (amount <= 0) {
+                player.sendMessage(ChatColor.RED + "Please enter a positive amount.");
+                return true;
+            }
+        } catch (NumberFormatException e) {
+            player.sendMessage(ChatColor.RED + "Invalid amount. Please enter a valid number.");
+            return true;
+        }
+
+        OrganizationProperties orgProps = organizationManager.getOrganization(orgName);
+        if (orgProps == null) {
+            player.sendMessage(ChatColor.RED + "Organization '" + orgName + "' not found.");
+            return true;
+        }
+
+        // Check if the player is a member or leader of the organization
+        if (!orgProps.getLeader().equalsIgnoreCase(player.getName()) && !orgProps.getMembers().contains(player.getName())) {
+            player.sendMessage(ChatColor.RED + "You must be a leader or a member of the organization to deposit funds.");
+            return true;
+        }
+
+        // Check if the player has enough money
+        if (economy.getBalance(player) < amount) {
+            player.sendMessage(ChatColor.RED + "You do not have enough funds to deposit. Your balance: $" + economy.getBalance(player));
+            return true;
+        }
+
+        // Perform the deposit
+        economy.withdrawPlayer(player, amount);
+        orgProps.deposit(amount);
+        organizationManager.saveOrganizations(); // Save the organization data
+
+        player.sendMessage(ChatColor.GREEN + "Deposited $" + amount + " to the organization: " + orgName);
+        return true;
+    }
+    private boolean handleOrgWithdraw(Player player, String[] args) {
+        if (args.length < 4) {
+            player.sendMessage(ChatColor.RED + "Usage: /wde org withdraw <orgName> <amount>");
+            return true;
+        }
+
+        String orgName = args[2];
+        double amount;
+
+        try {
+            amount = Double.parseDouble(args[3]);
+            if (amount <= 0) {
+                player.sendMessage(ChatColor.RED + "Please enter a positive amount.");
+                return true;
+            }
+        } catch (NumberFormatException e) {
+            player.sendMessage(ChatColor.RED + "Invalid amount. Please enter a valid number.");
+            return true;
+        }
+
+        OrganizationProperties orgProps = organizationManager.getOrganization(orgName);
+        if (orgProps == null) {
+            player.sendMessage(ChatColor.RED + "Organization '" + orgName + "' not found.");
+            return true;
+        }
+
+        // Check if the player is a member or leader of the organization
+        if (!orgProps.getLeader().equalsIgnoreCase(player.getName()) && !orgProps.getMembers().contains(player.getName())) {
+            player.sendMessage(ChatColor.RED + "You must be a leader or a member of the organization to withdraw funds.");
+            return true;
+        }
+
+        // Check if the organization has enough money
+        if (orgProps.getBalance() < amount) {
+            player.sendMessage(ChatColor.RED + "The organization does not have enough funds to withdraw. Current balance: $" + orgProps.getBalance());
+            return true;
+        }
+
+        // Perform the withdrawal
+        orgProps.withdraw(amount);
+        economy.depositPlayer(player, amount);
+        organizationManager.saveOrganizations(); // Save the organization data
+
+        player.sendMessage(ChatColor.GREEN + "Withdrew $" + amount + " from the organization: " + orgName);
+        return true;
+    }
+    private boolean handleOrgJoin(Player player, String[] args) {
+        if (args.length < 3) {
+            player.sendMessage(ChatColor.RED + "Usage: /wde org join <orgName>");
+            return true;
+        }
+
+        String orgName = args[2];
+        OrganizationProperties orgProps = organizationManager.getOrganization(orgName);
+
+        if (orgProps == null) {
+            player.sendMessage(ChatColor.RED + "Organization '" + orgName + "' not found.");
+            return true;
+        }
+
+        if (orgProps.getMembers().contains(player.getName())) {
+            player.sendMessage(ChatColor.RED + "You are already a member of this organization.");
+            return true;
+        }
+
+        if (orgProps.getType() == OrganizationProperties.OrganizationType.INTERNATIONAL && !isAnyNationLeader(player)) {
+            player.sendMessage(ChatColor.RED + "Only nation leaders can join INTERNATIONAL organizations.");
+            return true;
+        }
+
+        if (orgProps.getType() == OrganizationProperties.OrganizationType.GOVERNMENTAL && !isAnyNationLeader(player)) {
+            player.sendMessage(ChatColor.RED + "You can't join a Governmental Organization!");
+            return true;
+        }
+
+
+        // Add the player to the organization
+        orgProps.addMember(player.getName());
+        organizationManager.saveOrganizations();
+        player.sendMessage(ChatColor.GREEN + "You have successfully joined the organization: " + orgName);
+        return true;
+    }
+
+    private boolean handleOrgLeave(Player player, String[] args) {
+        if (args.length < 3) {
+            player.sendMessage(ChatColor.RED + "Usage: /wde org leave <orgName>");
+            return true;
+        }
+
+        String orgName = args[2];
+        OrganizationProperties orgProps = organizationManager.getOrganization(orgName);
+
+        if (orgProps == null) {
+            player.sendMessage(ChatColor.RED + "Organization '" + orgName + "' not found.");
+            return true;
+        }
+
+        if (!orgProps.getMembers().contains(player.getName())) {
+            player.sendMessage(ChatColor.RED + "You are not a member of this organization.");
+            return true;
+        }
+
+        // Remove the player from the organization's members list
+        orgProps.getMembers().remove(player.getName());
+        organizationManager.saveOrganizations();
+        player.sendMessage(ChatColor.GREEN + "You have successfully left the organization: " + orgName);
+        return true;
+    }
+    private boolean handleOrgAddMember(Player player, String[] args) {
+        if (args.length < 4) {
+            player.sendMessage(ChatColor.RED + "Usage: /wde org addmember <orgName> <user>");
+            return true;
+        }
+
+        String orgName = args[2];
+        String userName = args[3];
+        OrganizationProperties orgProps = organizationManager.getOrganization(orgName);
+
+        if (orgProps == null) {
+            player.sendMessage(ChatColor.RED + "Organization '" + orgName + "' not found.");
+            return true;
+        }
+
+        if (!orgProps.getLeader().equalsIgnoreCase(player.getName())) {
+            player.sendMessage(ChatColor.RED + "Only the organization leader can add members.");
+            return true;
+        }
+
+        if (orgProps.getType() != OrganizationProperties.OrganizationType.GOVERNMENTAL) {
+            player.sendMessage(ChatColor.RED + "This command can only be used for GOVERNMENTAL organizations.");
+            return true;
+        }
+
+        if (orgProps.getMembers().contains(userName)) {
+            player.sendMessage(ChatColor.RED + "User '" + userName + "' is already a member of this organization.");
+            return true;
+        }
+
+        orgProps.addMember(userName);
+        organizationManager.saveOrganizations();
+        player.sendMessage(ChatColor.GREEN + "User '" + userName + "' has been added to the organization: " + orgName);
+        return true;
+    }
+    private boolean handleOrgKickMember(Player player, String[] args) {
+        if (args.length < 4) {
+            player.sendMessage(ChatColor.RED + "Usage: /wde org kickmember <orgName> <user>");
+            return true;
+        }
+
+        String orgName = args[2];
+        String userName = args[3];
+        OrganizationProperties orgProps = organizationManager.getOrganization(orgName);
+
+        if (orgProps == null) {
+            player.sendMessage(ChatColor.RED + "Organization '" + orgName + "' not found.");
+            return true;
+        }
+
+        if (!orgProps.getLeader().equalsIgnoreCase(player.getName())) {
+            player.sendMessage(ChatColor.RED + "Only the organization leader can kick members.");
+            return true;
+        }
+
+        if (!orgProps.getMembers().contains(userName)) {
+            player.sendMessage(ChatColor.RED + "User '" + userName + "' is not a member of this organization.");
+            return true;
+        }
+
+        orgProps.getMembers().remove(userName);
+        organizationManager.saveOrganizations();
+        player.sendMessage(ChatColor.GREEN + "User '" + userName + "' has been removed from the organization: " + orgName);
+        return true;
+    }
+
 }
 

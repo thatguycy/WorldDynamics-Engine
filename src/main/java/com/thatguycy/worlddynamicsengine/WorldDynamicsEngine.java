@@ -43,7 +43,7 @@ public final class WorldDynamicsEngine extends JavaPlugin {
             getLogger().info("=============================================================");
         }
         this.getCommand("wde").setExecutor(new WDECommandExecutor(nationManager, organizationManager, getEconomy()));
-        this.getCommand("wde").setTabCompleter(new WDETabCompleter());
+        this.getCommand("wde").setTabCompleter(new WDETabCompleter(organizationManager));
         startGovernmentAutoSaveTask();
     }
 

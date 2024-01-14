@@ -9,10 +9,13 @@ public class OrganizationProperties {
     private String leader; // Player name for Business, Nation name for International
     private Set<String> members; // Player names or Nation names
     private OrganizationType type;
+    private double balance;
 
     public enum OrganizationType {
         BUSINESS,
-        INTERNATIONAL
+        INTERNATIONAL,
+
+        GOVERNMENTAL
     }
 
     public OrganizationProperties(String name, String leader, OrganizationType type) {
@@ -20,6 +23,7 @@ public class OrganizationProperties {
         this.leader = leader;
         this.type = type;
         this.members = new HashSet<>();
+        this.balance = 0.0;
     }
 
     // Getters and Setters
@@ -50,5 +54,28 @@ public class OrganizationProperties {
 
     public OrganizationType getType() {
         return type;
+    }
+
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public void deposit(double amount) {
+        if (amount > 0) {
+            this.balance += amount;
+        }
+    }
+
+    public boolean withdraw(double amount) {
+        if (amount > 0 && this.balance >= amount) {
+            this.balance -= amount;
+            return true;
+        }
+        return false;
     }
 }

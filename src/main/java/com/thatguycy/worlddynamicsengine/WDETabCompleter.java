@@ -6,29 +6,54 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class WDETabCompleter implements TabCompleter {
+    private final OrganizationManager organizationManager;
+
+    public WDETabCompleter(OrganizationManager organizationManager) {
+        this.organizationManager = organizationManager;
+    }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (command.getName().equalsIgnoreCase("wde")) {
             if (args.length == 1) {
-                // First argument completion (subcommands)
-                return getListOfStringsMatchingLastWord(args, "government", "help", "nation", "army");
-            } else if (args.length == 2 && args[0].equalsIgnoreCase("government")) {
-                // Second argument completion for /wde government
-                return getListOfStringsMatchingLastWord(args, "settype", "info", "leave", "setleader", "addmember", "kickmember");
-            } else if (args.length == 2 && args[0].equalsIgnoreCase("nation")) {
-                return getListOfNations();
-            } else if (args.length == 2 && args[0].equalsIgnoreCase("army")) {
-                return getListOfStringsMatchingLastWord(args, "leave", "setleader", "addmember", "kickmember");
-            } else if (args.length == 3 && args[0].equalsIgnoreCase("government") && args[1].equalsIgnoreCase("settype")) {
-                // Third argument completion for /wde government settype
-                return getListOfGovernmentTypes(args);
+                // First argument completion (main subcommands)
+                return getListOfStringsMatchingLastWord(args, "government", "help", "nation", "army", "org");
+            } else if (args.length == 2) {
+                switch (args[0].toLowerCase()) {
+                    case "government":
+                        return getListOfStringsMatchingLastWord(args, "settype", "info", "leave", "setleader", "addmember", "kickmember");
+                    case "nation":
+                        return getListOfNations();
+                    case "army":
+                        return getListOfStringsMatchingLastWord(args, "leave", "setleader", "addmember", "kickmember");
+                    case "org":
+                        return getListOfStringsMatchingLastWord(args, "create", "deposit", "withdraw", "join", "leave", "addmember", "kickmember", "info");
+                }
+            } else if (args.length == 3) {
+                if (args[0].equalsIgnoreCase("government") && args[1].equalsIgnoreCase("settype")) {
+                    return getListOfGovernmentTypes(args);
+                } else if (args[0].equalsIgnoreCase("org")) {
+                    switch (args[1].toLowerCase()) {
+                        case "create":
+                            return getListOfOrgTypes(); // Assuming this method returns a list of organization types
+                        case "deposit":
+                        case "withdraw":
+                        case "join":
+                        case "leave":
+                        case "addmember":
+                        case "kickmember":
+                        case "info":
+                            return getListOfOrgNames(); // Assuming this method returns a list of existing organization names
+                    }
+                }
             }
+            // Additional logic for other argument lengths as needed
         }
         return null;
     }
@@ -57,5 +82,14 @@ public class WDETabCompleter implements TabCompleter {
                 .stream()
                 .map(nation -> nation.getName())
                 .collect(Collectors.toList());
+    }
+
+    private List<String> getListOfOrgTypes() {
+        // Example: return a list of predefined organization types
+        return Arrays.asList("BUSINESS", "GOVERNMENTAL", "INTERNATIONAL");
+    }
+
+    private List<String> getListOfOrgNames() {
+        return new ArrayList<>(organizationManager.getOrganizations().keySet());
     }
 }
