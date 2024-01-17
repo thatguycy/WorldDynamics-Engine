@@ -1,5 +1,6 @@
 package com.thatguycy.worlddynamicsengine;
 import net.milkbowl.vault.economy.Economy;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -62,6 +63,8 @@ public final class WorldDynamicsEngine extends JavaPlugin {
         this.getCommand("wde").setTabCompleter(new WDETabCompleter(organizationManager));
         startGovernmentAutoSaveTask();
         startDailyInterestTask();
+        int pluginId = 20763; // <-- Replace with the id of your plugin!
+        Metrics metrics = new Metrics(this, pluginId);
     }
 
 
