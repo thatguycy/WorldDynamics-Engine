@@ -19,6 +19,7 @@ import com.palmergames.bukkit.towny.object.Resident;
 import java.util.Random;
 
 import static com.palmergames.bukkit.towny.TownyEconomyHandler.setupEconomy;
+import static org.bukkit.Bukkit.getServer;
 
 public final class WorldDynamicsEngine extends JavaPlugin {
     private NationManager nationManager;
@@ -72,6 +73,7 @@ public final class WorldDynamicsEngine extends JavaPlugin {
             }
         }.runTaskTimer(this, 0L, 24000L); // 24000L is the duration of a Minecraft day in ticks
     }
+
     private void applyInterestToOrganizations() {
         // Check if interest is enabled
         if (!getConfig().getBoolean("interest.enabled")) {
@@ -98,9 +100,9 @@ public final class WorldDynamicsEngine extends JavaPlugin {
                         org.getName(), interestRate * 100, org.getBalance()));
             }
         }
-            organizationManager.saveOrganizations();
-        }
+        organizationManager.saveOrganizations();
     }
+
     private void startGovernmentAutoSaveTask() {
         new BukkitRunnable() {
             @Override
