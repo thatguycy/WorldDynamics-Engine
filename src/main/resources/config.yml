@@ -1,0 +1,4 @@
+interest:
+  enabled: true
+  maxrate: 0.05 # Maximum interest rate (5%)
+  minrate: 0.01 # Minimum interest rate (1%)
