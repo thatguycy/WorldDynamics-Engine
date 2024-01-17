@@ -1,4 +1,5 @@
 package com.thatguycy.worlddynamicsengine;
+import com.palmergames.bukkit.towny.object.Town;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import com.palmergames.bukkit.towny.TownyUniverse;
@@ -74,6 +75,8 @@ public class WDECommandExecutor implements CommandExecutor {
                     return true;
                 }
                 return handleCreateOrganization(player, args);
+            case "setattr":
+                return handleSetAttribute(player, args);
             case "info":
                 return handleOrgInfo(player, args);
             case "deposit":
@@ -117,6 +120,7 @@ public class WDECommandExecutor implements CommandExecutor {
         sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org addmember <orgname> <user> -" + ChatColor.WHITE + " Add a member to a GOVERNMENTAL organization (OrgLeader only).");
         sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org kickmember <orgname> <user> -" + ChatColor.WHITE + " Remove a member from an organization (OrgLeader only).");
         sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org info <orgname> -" + ChatColor.WHITE + "Display information about an organization.");
+        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org setattr <orgname> <attribute> -" + ChatColor.WHITE + "Set an organization's attribute.");
 
         return true;
     }
@@ -661,6 +665,8 @@ public class WDECommandExecutor implements CommandExecutor {
             sender.sendMessage(ChatColor.YELLOW + "Members: " + ChatColor.WHITE + (members.isEmpty() ? "None" : members));
             String balance = String.format("$%.2f", orgProps.getBalance());
             sender.sendMessage(ChatColor.YELLOW + "Balance: " + ChatColor.WHITE + balance);
+            String orgAttr = orgProps.getType() != null ? orgProps.getAttribute().name() : "None";
+            sender.sendMessage(ChatColor.YELLOW + "Organization Attribute: " + ChatColor.WHITE + orgAttr);
 
         } else {
             // Organization does not exist
@@ -885,6 +891,82 @@ public class WDECommandExecutor implements CommandExecutor {
         organizationManager.saveOrganizations();
         player.sendMessage(ChatColor.GREEN + "User '" + userName + "' has been removed from the organization: " + orgName);
         return true;
+    }
+    private boolean handleSetAttribute(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "Only players can use this command.");
+            return true;
+        }
+
+        Player player = (Player) sender;
+
+        if (args.length < 4) {
+            sender.sendMessage(ChatColor.RED + "Usage: /wde org setattr <orgName> <attribute>");
+            return true;
+        }
+
+        String orgName = args[2];
+        String attributeName = args[3].toUpperCase();
+
+        // Retrieve the organization
+        OrganizationProperties org = organizationManager.getOrganization(orgName);
+        if (org == null) {
+            sender.sendMessage(ChatColor.RED + "Organization '" + orgName + "' not found.");
+            return true;
+        }
+
+        // Get the nation this organization belongs to
+        Nation orgNation = getNationForOrganization(org); // Implement this method
+        if (orgNation == null) {
+            sender.sendMessage(ChatColor.RED + "The organization '" + orgName + "' does not belong to any nation.");
+            return true;
+        }
+
+        // Check if the sender is the leader of the nation
+        if (!isNationLeader(player, orgNation)) {
+            sender.sendMessage(ChatColor.RED + "You must be the leader of the nation to set attributes for its organizations.");
+            return true;
+        }
+
+        // Check if the attribute is valid and set it
+        try {
+            OrganizationProperties.OrganizationAttribute attribute = OrganizationProperties.OrganizationAttribute.valueOf(attributeName);
+            org.setAttribute(attribute);
+            organizationManager.saveOrganizations(); // Save the organization data
+            sender.sendMessage(ChatColor.GREEN + "Attribute '" + attribute + "' set successfully for organization '" + orgName + "'.");
+        } catch (IllegalArgumentException e) {
+            sender.sendMessage(ChatColor.RED + "Invalid attribute. Valid attributes are: NONE, BANK, PASSPORT_OFFICE, ...");
+        }
+
+        return true;
+    }
+
+    private Nation getNationForOrganization(OrganizationProperties org) {
+        try {
+            // Get the leader of the organization
+            String leaderName = org.getLeader();
+
+            // Use Towny API to get the Resident object for the leader
+            Resident leaderResident = TownyUniverse.getInstance().getResident(leaderName);
+            if (leaderResident == null || !leaderResident.hasTown()) {
+                return null; // Leader is not part of any town
+            }
+
+            // Get the town of the resident
+            Town town = leaderResident.getTown();
+
+            // Check if the town is part of a nation
+            if (!town.hasNation()) {
+                return null; // The town is not part of a nation
+            }
+
+            // Return the nation
+            return town.getNation();
+
+        } catch (NotRegisteredException e) {
+            // This exception is thrown if the resident doesn't exist or isn't part of a town/nation
+            return null;
+        }
     }
 
 }

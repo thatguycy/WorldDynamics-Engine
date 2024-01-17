@@ -10,6 +10,8 @@ public class OrganizationProperties {
     private Set<String> members; // Player names or Nation names
     private OrganizationType type;
     private double balance;
+    private OrganizationAttribute attribute;
+
 
     public enum OrganizationType {
         BUSINESS,
@@ -18,12 +20,48 @@ public class OrganizationProperties {
         GOVERNMENTAL
     }
 
+    public enum OrganizationAttribute {
+        NONE,
+        BANK,
+        PASSPORT_OFFICE,
+        EMBASSY,
+        TRADE_CENTER,
+        CULTURAL_INSTITUTE,
+        MILITARY_BASE,
+        RESEARCH_LAB,
+        EDUCATIONAL_INSTITUTE,
+        MEDICAL_CENTER,
+        MARKETPLACE,
+        TRANSPORT_HUB,
+        LEGAL_COURT,
+        ENVIRONMENTAL_AGENCY,
+        HOUSING_COMPLEX,
+        AGRICULTURAL_FACILITY,
+        ENERGY_PLANT,
+        NEWS_AGENCY,
+        ENTERTAINMENT_VENUE,
+        TOURIST_ATTRACTION
+        // ... other attributes as needed
+    }
+
+
+
     public OrganizationProperties(String name, String leader, OrganizationType type) {
         this.name = name;
         this.leader = leader;
         this.type = type;
         this.members = new HashSet<>();
         this.balance = 0.0;
+        this.attribute = OrganizationAttribute.NONE; // Set the default attribute to NONE
+    }
+
+
+    public void setAttribute(OrganizationAttribute attribute) {
+        this.attribute = attribute;
+    }
+
+    public OrganizationAttribute getAttribute() {
+        return attribute;
     }
 
     // Getters and Setters

@@ -33,7 +33,7 @@ public class WDETabCompleter implements TabCompleter {
                     case "army":
                         return getListOfStringsMatchingLastWord(args, "leave", "setleader", "addmember", "kickmember");
                     case "org":
-                        return getListOfStringsMatchingLastWord(args, "create", "deposit", "withdraw", "join", "leave", "addmember", "kickmember", "info");
+                        return getListOfStringsMatchingLastWord(args, "create", "deposit", "withdraw", "join", "leave", "addmember", "kickmember", "info", "setattr");
                 }
             } else if (args.length == 3) {
                 if (args[0].equalsIgnoreCase("government") && args[1].equalsIgnoreCase("settype")) {
@@ -50,6 +50,13 @@ public class WDETabCompleter implements TabCompleter {
                         case "kickmember":
                         case "info":
                             return getListOfOrgNames(); // Assuming this method returns a list of existing organization names
+                        case "setattr":
+                            if (args.length == 3) { // When typing the organization name
+                                return getListOfOrgNames();
+                            } else if (args.length == 4) { // When typing the attribute
+                                return getListOfOrgAttributes(args);
+                            }
+                            break;
                     }
                 }
             }
@@ -87,6 +94,31 @@ public class WDETabCompleter implements TabCompleter {
     private List<String> getListOfOrgTypes() {
         // Example: return a list of predefined organization types
         return Arrays.asList("BUSINESS", "GOVERNMENTAL", "INTERNATIONAL");
+    }
+
+    private List<String> getListOfOrgAttributes() {
+        return Arrays.asList(
+                "NONE",
+                "BANK",
+                "PASSPORT_OFFICE",
+                "EMBASSY",
+                "TRADE_CENTER",
+                "CULTURAL_INSTITUTE",
+                "MILITARY_BASE",
+                "RESEARCH_LAB",
+                "EDUCATIONAL_INSTITUTE",
+                "MEDICAL_CENTER",
+                "MARKETPLACE",
+                "TRANSPORT_HUB",
+                "LEGAL_COURT",
+                "ENVIRONMENTAL_AGENCY",
+                "HOUSING_COMPLEX",
+                "AGRICULTURAL_FACILITY",
+                "ENERGY_PLANT",
+                "NEWS_AGENCY",
+                "ENTERTAINMENT_VENUE",
+                "TOURIST_ATTRACTION"
+        );
     }
 
     private List<String> getListOfOrgNames() {
