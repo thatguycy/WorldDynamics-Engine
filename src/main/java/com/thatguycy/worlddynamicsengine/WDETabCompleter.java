@@ -54,7 +54,7 @@ public class WDETabCompleter implements TabCompleter {
                             if (args.length == 3) { // When typing the organization name
                                 return getListOfOrgNames();
                             } else if (args.length == 4) { // When typing the attribute
-                                return getListOfOrgAttributes(args);
+                                return getListOfOrgAttributes();
                             }
                             break;
                     }

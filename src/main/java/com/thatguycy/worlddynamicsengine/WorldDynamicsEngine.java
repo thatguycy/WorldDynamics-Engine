@@ -17,6 +17,10 @@ import org.bukkit.ChatColor;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Random;
 
 import static com.palmergames.bukkit.towny.TownyEconomyHandler.setupEconomy;
@@ -59,6 +63,7 @@ public final class WorldDynamicsEngine extends JavaPlugin {
             getLogger().info(" Craft complex worlds and shape geopolitical adventures!");
             getLogger().info("=============================================================");
         }
+        checkForUpdates();
         this.getCommand("wde").setExecutor(new WDECommandExecutor(nationManager, organizationManager, getEconomy()));
         this.getCommand("wde").setTabCompleter(new WDETabCompleter(organizationManager));
         startGovernmentAutoSaveTask();
@@ -137,4 +142,29 @@ public final class WorldDynamicsEngine extends JavaPlugin {
     public static Economy getEconomy() {
         return economy;
     }
+    private void checkForUpdates() {
+        try {
+            URL url = new URL("https://raw.githubusercontent.com/thatguycy/WorldDynamics-Engine/master/current.version"); // URL to your version file
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String latestVersion = in.readLine();
+            in.close();
+
+            String currentVersion = this.getDescription().getVersion();
+            if (!currentVersion.equals(latestVersion)) {
+                getLogger().info("=============================================================");
+                getLogger().info(" WorldDynamics Engine is out of date!");
+                getLogger().info(" Your Version: " + currentVersion);
+                getLogger().info(" Our Version: " + latestVersion);
+                getLogger().info(" Update: https://github.com/thatguycy/WorldDynamics-Engine");
+                getLogger().info(" Craft complex worlds and shape geopolitical adventures!");
+                getLogger().info("=============================================================");
+            }
+        } catch (Exception e) {
+            getLogger().warning("Failed to check for updates: " + e.getMessage());
+        }
+    }
+
 }
