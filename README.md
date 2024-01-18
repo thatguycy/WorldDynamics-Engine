@@ -31,6 +31,9 @@ WorldDynamics Engine is a sophisticated roleplay plugin designed for geopolitica
     <tr align=center><td>MC 1.2.5</td><td><a href=https://www.dropbox.com/s/xstn1vdexxc1k5q/Towny_Advanced%200.82.0.0%20for%201.2.5.zip?dl=0>0.82.0.0</a></td>
 </table>
 
+## Usage Statistics
+
+![bStats Graph](https://bstats.org/signatures/bukkit/WorldDynamics%20Engine.svg)
 
 ## Current Features
 
