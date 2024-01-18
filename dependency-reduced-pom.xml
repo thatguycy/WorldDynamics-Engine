@@ -4,7 +4,7 @@
   <groupId>com.thatguycy</groupId>
   <artifactId>WorldDynamicsEngine</artifactId>
   <name>WorldDynamicsEngine</name>
-  <version>0.1.4</version>
+  <version>0.1.5</version>
   <description>WorldDynamics Engine is a Minecraft plugin that adds dynamic policies to your world!</description>
   <url>https://github.com/thatguycy/WorldDynamics-Engine</url>
   <build>

@@ -135,10 +135,6 @@ public class WDECommandExecutor implements CommandExecutor {
 
             Nation nation = resident.getTown().getNation();
             NationProperties properties = nationManager.getNationProperties(nation.getName());
-            if (properties == null) {
-                player.sendMessage(ChatColor.RED + "Your nation does not have any attributes assigned by WDE.");
-                return true;
-            }
 
             if (args.length < 2) {
                 player.sendMessage(ChatColor.RED + "Usage: /wde government <settype|info|setleader|addmember|kickmember|leave>");
