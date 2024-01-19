@@ -1,5 +1,5 @@
 name: WorldDynamicsEngine
-version: '0.1.4'
+version: '0.1.6'
 main: com.thatguycy.worlddynamicsengine.WorldDynamicsEngine
 api-version: '1.20'
 softdepend: [Towny, Vault]

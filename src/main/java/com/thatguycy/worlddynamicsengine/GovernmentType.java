@@ -1,36 +1,22 @@
 package com.thatguycy.worlddynamicsengine;
 
-public enum GovernmentType {
-    DEMOCRACY,
-    MONARCHY,
-    DICTATORSHIP,
-    THEOCRACY,
-    OLIGARCHY,
-    TOTALITARIANISM,
-    ANARCHY,
-    REPUBLIC,
-    COMMUNISM,
-    SOCIALISM,
-    FEDERATION,
-    CONFEDERATION,
-    ARISTOCRACY,
-    TECHNOCRACY,
-    PLUTOCRACY,
-    MILITARY_JUNTA,
-    TRIBALISM,
-    COLONIALISM,
-    ABSOLUTE_MONARCHY,
-    CONSTITUTIONAL_MONARCHY,
-    PRESIDENTIAL_REPUBLIC,
-    PARLIAMENTARY_REPUBLIC,
-    ANARCHO_SYNDICALISM,
-    CORPORATOCRACY,
-    MERITOCRACY,
-    DIRECT_DEMOCRACY,
-    REPRESENTATIVE_DEMOCRACY,
-    KLEPTOCRACY,
-    MATRIARCHY,
-    PATRIARCHY,
-    STRATOCRACY,
-    NOMOCRACY
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+public class GovernmentType {
+    private static final Set<String> TYPES = new HashSet<>();
+
+    public static void loadTypes(Set<String> types) {
+        TYPES.clear();
+        TYPES.addAll(types);
+    }
+
+    public static Set<String> getTypes() {
+        return Collections.unmodifiableSet(TYPES);
+    }
+
+    public static boolean isValidType(String type) {
+        return TYPES.contains(type);
+    }
 }

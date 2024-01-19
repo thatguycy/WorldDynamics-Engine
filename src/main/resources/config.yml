@@ -1,4 +1,19 @@
+########################################################
+# INTEREST ---> How much money a business's balance    #
+# will increase on a day-to-day basis, this number is  #
+# random and different for every business.             #
+########################################################
 interest:
   enabled: true
   maxrate: 0.05 # Maximum interest rate (5%)
   minrate: 0.01 # Minimum interest rate (1%)
+
+########################################################
+# GOVERNMENT TYPES ---> Types of government you may    #
+# create, beware custom government types that aren't   #
+# in the list may not have custom benefits in future!  #
+########################################################
+government_types:
+  - DEMOCRACY
+  - MONARCHY
+  - DICTATORSHIP

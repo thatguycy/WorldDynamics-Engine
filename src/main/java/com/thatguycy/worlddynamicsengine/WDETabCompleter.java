@@ -78,11 +78,11 @@ public class WDETabCompleter implements TabCompleter {
 
     private List<String> getListOfGovernmentTypes(String[] args) {
         String lastWord = args[args.length - 1].toLowerCase();
-        return Stream.of(GovernmentType.values())
-                .map(Enum::name)
+        return GovernmentType.getTypes().stream()
                 .filter(name -> name.toLowerCase().startsWith(lastWord))
                 .collect(Collectors.toList());
     }
+
 
     private List<String> getListOfNations() {
         return TownyUniverse.getInstance().getNations()

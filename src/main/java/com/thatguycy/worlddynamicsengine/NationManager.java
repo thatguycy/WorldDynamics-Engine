@@ -37,14 +37,13 @@ public class NationManager {
             for (String nationName : nationsConfig.getConfigurationSection("nations").getKeys(false)) {
                 // Load GovernmentType
                 String govTypeStr = nationsConfig.getString("nations." + nationName + ".GovernmentType", "DEMOCRACY");
-                GovernmentType govType = GovernmentType.valueOf(govTypeStr);
 
                 // Load Army Leader and Members
                 String armyLeaderName = nationsConfig.getString("nations." + nationName + ".ArmyLeader", null);
                 Resident armyLeader = armyLeaderName != null ? TownyUniverse.getInstance().getResident(armyLeaderName) : null;
                 List<String> armyMembers = nationsConfig.getStringList("nations." + nationName + ".ArmyMembers");
 
-                NationProperties properties = new NationProperties(govType);
+                NationProperties properties = new NationProperties(govTypeStr);
                 properties.setArmyLeader(armyLeader);
                 armyMembers.forEach(properties::addArmyMember);
 
@@ -59,7 +58,7 @@ public class NationManager {
             NationProperties properties = entry.getValue();
 
             // Save GovernmentType
-            nationsConfig.set("nations." + nationName + ".GovernmentType", properties.getGovernmentType().name());
+            nationsConfig.set("nations." + nationName + ".GovernmentType", properties.getGovernmentType());
 
             // Save Army Leader and Members
             if (properties.getArmyLeader() != null) {
@@ -95,7 +94,7 @@ public class NationManager {
         if (nationExistsInTowny) {
             if (properties != null) {
                 // Display nation info from NationManager
-                String governmentType = properties.getGovernmentType() != null ? properties.getGovernmentType().name() : "none";
+                String governmentType = properties.getGovernmentType() != null ? properties.getGovernmentType().toString() : "none";
                 sender.sendMessage(ChatColor.YELLOW + "Government Type: " + ChatColor.WHITE + governmentType);
                 String leaderName = properties.getArmyLeader() != null ? properties.getArmyLeader().getName() : "None";
                 sender.sendMessage(ChatColor.YELLOW + "Army Leader: " + ChatColor.WHITE + leaderName);

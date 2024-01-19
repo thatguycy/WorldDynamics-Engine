@@ -21,6 +21,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 import static com.palmergames.bukkit.towny.TownyEconomyHandler.setupEconomy;
@@ -36,6 +38,7 @@ public final class WorldDynamicsEngine extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         reloadConfig();
+        loadGovernmentTypes();
         if (!setupEconomy()) {
             getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
@@ -72,6 +75,10 @@ public final class WorldDynamicsEngine extends JavaPlugin {
         Metrics metrics = new Metrics(this, pluginId);
     }
 
+    private void loadGovernmentTypes() {
+        List<String> types = getConfig().getStringList("government_types");
+        GovernmentType.loadTypes(new HashSet<>(types));
+    }
 
     private void startDailyInterestTask() {
         new BukkitRunnable() {

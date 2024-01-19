@@ -6,24 +6,24 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class NationProperties implements Serializable {
-    private GovernmentType governmentType;
+    private String governmentType;
     private Resident armyLeader;
     private Set<String> armyMembers; // Storing army members by their names
     private Resident governmentLeader;
     private Set<String> governmentMembers;
 
-    public NationProperties(GovernmentType governmentType) {
+    public NationProperties(String governmentType) {
         this.governmentType = governmentType;
         this.armyMembers = new HashSet<>(); // Initialize the set
         this.governmentMembers = new HashSet<>();
     }
 
 
-    public GovernmentType getGovernmentType() {
+    public String getGovernmentType() {
         return governmentType;
     }
 
-    public void setGovernmentType(GovernmentType governmentType) {
+    public void setGovernmentType(String governmentType) {
         this.governmentType = governmentType;
     }
 

@@ -127,7 +127,7 @@ public class WDECommandExecutor implements CommandExecutor {
 
     private boolean handleGovernmentCommand(Player player, String[] args) {
         try {
-            Resident resident = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getResident(player.getName());
+            Resident resident = TownyUniverse.getInstance().getResident(player.getName());
             if (!resident.hasNation()) {
                 player.sendMessage(ChatColor.RED + "You must be part of a nation to use this command.");
                 return true;
@@ -177,9 +177,11 @@ public class WDECommandExecutor implements CommandExecutor {
         }
 
         String typeArg = args[2].toUpperCase();
-        GovernmentType type;
+        String type = null;
         try {
-            type = GovernmentType.valueOf(typeArg);
+            if (GovernmentType.isValidType(typeArg)) {
+                type = typeArg;
+            }
         } catch (IllegalArgumentException e) {
             player.sendMessage(ChatColor.RED + "Invalid government type: " + typeArg);
             return true;
@@ -202,7 +204,7 @@ public class WDECommandExecutor implements CommandExecutor {
         if (properties == null || properties.getGovernmentType() == null) {
             player.sendMessage(ChatColor.RED + "Your nation does not have a set government type.");
         } else {
-            player.sendMessage(ChatColor.GREEN + "Your nation's government type is: " + properties.getGovernmentType().name());
+            player.sendMessage(ChatColor.GREEN + "Your nation's government type is: " + properties.getGovernmentType());
         }
         return true;
     }
