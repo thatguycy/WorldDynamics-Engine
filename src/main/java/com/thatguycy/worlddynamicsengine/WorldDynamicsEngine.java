@@ -44,24 +44,18 @@ public final class WorldDynamicsEngine extends JavaPlugin {
         saveDefaultConfig();
         reloadConfig();
         loadGovernmentTypes();
-        if (!setupEconomy()) {
-            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-        nationManager = new NationManager(this);
-        organizationManager = new OrganizationManager(this.getDataFolder());
-        humanManager = new HumanManager(this.getDataFolder());
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(humanManager), this);
         if (getServer().getPluginManager().getPlugin("Towny") == null ||
                 getServer().getPluginManager().getPlugin("Vault") == null) {
-            getLogger().info("=============================================================");
-            getLogger().info(" WorldDynamics Engine failed to start!");
-            getLogger().info(" Reason: Vault/Towny not installed or started properly!");
-            getLogger().info(" Notes: Open an issue request, or solve it yourself!");
-            getLogger().info(" Version: " + this.getDescription().getVersion());
-            getLogger().info(" Craft complex worlds and shape geopolitical adventures!");
-            getLogger().info("=============================================================");
+            getLogger().warning("=============================================================");
+            getLogger().warning(" WorldDynamics Engine failed to start!");
+            getLogger().warning(" Reason: Vault/Towny not installed or started properly!");
+            getLogger().warning(" Notes: Open an issue request, or solve it yourself!");
+            getLogger().warning(" Version: " + this.getDescription().getVersion());
+            getLogger().warning(" Craft complex worlds and shape geopolitical adventures!");
+            getLogger().warning("=============================================================");
+            getServer().getPluginManager().disablePlugin(this);
+        } else if (!setupEconomy()) {
+            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
         } else {
             Plugin towny = getServer().getPluginManager().getPlugin("Towny");
@@ -73,6 +67,10 @@ public final class WorldDynamicsEngine extends JavaPlugin {
             getLogger().info(" Craft complex worlds and shape geopolitical adventures!");
             getLogger().info("=============================================================");
         }
+        nationManager = new NationManager(this);
+        organizationManager = new OrganizationManager(this.getDataFolder());
+        humanManager = new HumanManager(this.getDataFolder());
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(humanManager), this);
         checkForUpdates();
         this.getCommand("wde").setExecutor(new WDECommandExecutor(nationManager, organizationManager, getEconomy(), this));
         this.getCommand("wde").setTabCompleter(new WDETabCompleter(organizationManager));
