@@ -15,12 +15,14 @@ public class WDECommandExecutor implements CommandExecutor {
 
     private NationManager nationManager;
     private OrganizationManager organizationManager;
+    private HumanManager humanManager;
     private Economy economy;
     private WorldDynamicsEngine main;
 
-    public WDECommandExecutor(NationManager nationManager, OrganizationManager organizationManager, Economy economy, WorldDynamicsEngine main) {
+    public WDECommandExecutor(NationManager nationManager, OrganizationManager organizationManager, Economy economy, WorldDynamicsEngine main, HumanManager humanManager) {
         this.nationManager = nationManager;
         this.organizationManager = organizationManager;
+        this.humanManager = humanManager;
         this.economy = economy;
         this.main = main;
     }
@@ -46,6 +48,8 @@ public class WDECommandExecutor implements CommandExecutor {
                     return handleArmyCommand(player, args);
                 case "government":
                     return handleGovernmentCommand(player, args);
+                case "human":
+                    return handleHumanCommand(player, args);
                 case "nation":
                     if (args.length > 1) {
                         String nationName = args[1];
@@ -100,7 +104,26 @@ public class WDECommandExecutor implements CommandExecutor {
                 return true;
         }
     }
+    private boolean handleHumanCommand(Player player, String[] args) {
+        if (args.length == 1) {
+            player.sendMessage(ChatColor.RED + "Usage: /wde human <info>");
+            return true;
+        }
+  //      Someone remind me to adding this to the config later :eyes:
 
+  //      if (!(main.isHumansEnabled())) {
+  //          player.sendMessage(ChatColor.RED + "Humans are not enabled!");
+  //          return true;
+  //      }
+        String orgCommand = args[1].toLowerCase();
+        switch (orgCommand) {
+            case "info":
+                return handleHumanInfo(player, args);
+            default:
+                player.sendMessage(ChatColor.RED + "Unknown human subcommand.");
+                return true;
+        }
+    }
     private boolean displayHelp(CommandSender sender) {
         StringBuilder helpMessageBuilder = new StringBuilder();
         helpMessageBuilder.append(ChatColor.YELLOW).append("WorldDynamics Engine Commands:\n");
@@ -660,6 +683,17 @@ public class WDECommandExecutor implements CommandExecutor {
         return true;
     }
 
+    private boolean handleHumanInfo(CommandSender sender, String[] args) {
+        if (args.length < 2) {
+            sender.sendMessage(ChatColor.RED + "Usage: /wde human info <username>");
+            return true;
+        }
+
+        String username = args[2];
+        displayHumanInfo(sender, username);
+        return true;
+    }
+
     public void displayOrgInfo(CommandSender sender, String orgName) {
         OrganizationProperties orgProps = organizationManager.getOrganization(orgName);
 
@@ -685,6 +719,28 @@ public class WDECommandExecutor implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "Organization does not exist.");
         }
     }
+
+    public void displayHumanInfo(CommandSender sender, String username) {
+        HumanProperties humanProperties = humanManager.getHuman(username);
+
+        // Header
+        String header = ChatColor.GOLD + "---------------=[" + ChatColor.GREEN + " " + username + " " + ChatColor.GOLD + "]=---------------";
+        sender.sendMessage(header);
+
+        if (humanProperties != null) {
+            // Display organization info
+            String humName = humanProperties.getUsername() != null ? humanProperties.getUsername() : "None";
+            sender.sendMessage(ChatColor.YELLOW + "Username: " + ChatColor.WHITE + humName);
+            String humNiName = humanProperties.getNickname() != null ? humanProperties.getNickname() : "None";
+            sender.sendMessage(ChatColor.YELLOW + "Nickname: " + ChatColor.WHITE + humNiName);
+            String humOcc = humanProperties.getOccupation() != null ? humanProperties.getOccupation() : "Unemployed";
+            sender.sendMessage(ChatColor.YELLOW + "Occupation: " + ChatColor.WHITE + humOcc);
+        } else {
+            // Organization does not exist
+            sender.sendMessage(ChatColor.RED + "Human does not exist.");
+        }
+    }
+
     private boolean handleOrgDeposit(Player player, String[] args) {
         if (args.length < 4) {
             player.sendMessage(ChatColor.RED + "Usage: /wde org deposit <orgName> <amount>");

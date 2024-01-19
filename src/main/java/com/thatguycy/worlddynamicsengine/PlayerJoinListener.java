@@ -15,13 +15,11 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         String username = event.getPlayer().getName();
-
-        // Check if a HumanProperties object already exists
         if (humanManager.getHuman(username) == null) {
-            // Create a new HumanProperties object if it doesn't exist
             HumanProperties human = new HumanProperties(username);
             humanManager.addHuman(human);
             humanManager.saveHumans();
         }
     }
 }
+

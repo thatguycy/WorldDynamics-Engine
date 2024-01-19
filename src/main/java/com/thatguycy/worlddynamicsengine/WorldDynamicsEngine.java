@@ -74,10 +74,10 @@ public final class WorldDynamicsEngine extends JavaPlugin {
             getLogger().info("=============================================================");
         }
         checkForUpdates();
-        this.getCommand("wde").setExecutor(new WDECommandExecutor(nationManager, organizationManager, getEconomy(), this));
+        this.getCommand("wde").setExecutor(new WDECommandExecutor(nationManager, organizationManager, getEconomy(), this, humanManager));
+        getServer().getPluginManager().registerEvents(new TownyNewDayListener(this), this);
         this.getCommand("wde").setTabCompleter(new WDETabCompleter(organizationManager));
         startGovernmentAutoSaveTask();
-        startDailyInterestTask();
         int pluginId = 20763; // <-- Replace with the id of your plugin!
         Metrics metrics = new Metrics(this, pluginId);
         organizationsEnabled = getConfig().getBoolean("organizations.enabled", true); // Default to true
@@ -103,17 +103,7 @@ public final class WorldDynamicsEngine extends JavaPlugin {
         List<String> types = getConfig().getStringList("government_types");
         GovernmentType.loadTypes(new HashSet<>(types));
     }
-
-    private void startDailyInterestTask() {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                applyInterestToOrganizations();
-            }
-        }.runTaskTimer(this, 0L, 24000L); // 24000L is the duration of a Minecraft day in ticks
-    }
-
-    private void applyInterestToOrganizations() {
+    void applyInterestToOrganizations() {
         // Check if interest is enabled
         if (!getConfig().getBoolean("interest.enabled")) {
             return; // Exit if interest feature is disabled
