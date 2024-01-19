@@ -9,6 +9,17 @@
 More than just a Towny Addon, it's a **Towny Essential Upgrade**!
 
 WorldDynamics Engine is a sophisticated roleplay plugin designed for geopolitical servers. It allows players to immerse themselves in dynamic political landscapes, manage resources, engage in diplomacy, and shape the world with their decisions.
+<table>
+    <tr>
+        <th style="width:221%" colspan="2"><b>Hall Of Fame</b></th>
+    </tr>
+    <tr>
+        <td><a href="https://github.com/1ByteBit">1ByteBit</a></td>
+        <td>Contributor/Sponsor</td>
+    </tr>
+</table>
+
+**Want to be on the hall of fame? Well, you'd best be thinking about contributing!**
 
 <table>
     <tr><th>Minecraft Version</th><th>Towny Version</th><th>WDE Version</th></tr>

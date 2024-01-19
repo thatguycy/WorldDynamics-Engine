@@ -1,6 +1,5 @@
 package com.thatguycy.worlddynamicsengine;
 import com.palmergames.bukkit.towny.object.Town;
-import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Nation;
@@ -17,11 +16,13 @@ public class WDECommandExecutor implements CommandExecutor {
     private NationManager nationManager;
     private OrganizationManager organizationManager;
     private Economy economy;
+    private WorldDynamicsEngine main;
 
-    public WDECommandExecutor(NationManager nationManager, OrganizationManager organizationManager, Economy economy) {
+    public WDECommandExecutor(NationManager nationManager, OrganizationManager organizationManager, Economy economy, WorldDynamicsEngine main) {
         this.nationManager = nationManager;
         this.organizationManager = organizationManager;
         this.economy = economy;
+        this.main = main;
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -66,7 +67,10 @@ public class WDECommandExecutor implements CommandExecutor {
             player.sendMessage(ChatColor.RED + "Usage: /wde org <create>");
             return true;
         }
-
+        if (!(main.isOrganizationsEnabled())) {
+            player.sendMessage(ChatColor.RED + "Organizations are not enabled!");
+            return true;
+        }
         String orgCommand = args[1].toLowerCase();
         switch (orgCommand) {
             case "create":
@@ -128,6 +132,10 @@ public class WDECommandExecutor implements CommandExecutor {
     }
 
     private boolean handleGovernmentCommand(Player player, String[] args) {
+        if (!(main.isGovernmentEnabled())) {
+            player.sendMessage(ChatColor.RED + "Governments are not enabled!");
+            return true;
+        }
         try {
             Resident resident = TownyUniverse.getInstance().getResident(player.getName());
             if (!resident.hasNation()) {
@@ -212,6 +220,10 @@ public class WDECommandExecutor implements CommandExecutor {
     }
 
     private boolean handleArmyCommand(Player player, String[] args) {
+        if (!(main.isArmyEnabled())) {
+            player.sendMessage(ChatColor.RED + "Armies are not enabled!");
+            return true;
+        }
         if (args.length < 2) {
             player.sendMessage(ChatColor.RED + "Usage: /wde army <setleader|addmember|kickmember|leave>");
             return true;

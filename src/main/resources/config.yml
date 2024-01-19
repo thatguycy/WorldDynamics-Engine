@@ -17,3 +17,21 @@ government_types:
   - DEMOCRACY
   - MONARCHY
   - DICTATORSHIP
+
+########################################################
+# ORGANIZATIONS ---> Configure how organizations work! #
+########################################################
+organizations:
+  enabled: true
+
+########################################################
+# ARMY ---> Configure how armies work!                 #
+########################################################
+army:
+  enabled: true
+
+########################################################
+# GOVERNMENT ---> Configure how governments work!      #
+########################################################
+government:
+  enabled: true

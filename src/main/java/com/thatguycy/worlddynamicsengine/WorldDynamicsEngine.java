@@ -30,9 +30,14 @@ import static org.bukkit.Bukkit.getServer;
 
 public final class WorldDynamicsEngine extends JavaPlugin {
     private NationManager nationManager;
+    private HumanManager humanManager;
+
     private OrganizationManager organizationManager;
 
     private static Economy economy = null;
+    private boolean organizationsEnabled;
+    private boolean armyEnabled;
+    private boolean governmentEnabled;
 
     @Override
     public void onEnable() {
@@ -46,6 +51,8 @@ public final class WorldDynamicsEngine extends JavaPlugin {
         }
         nationManager = new NationManager(this);
         organizationManager = new OrganizationManager(this.getDataFolder());
+        humanManager = new HumanManager(this.getDataFolder());
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(humanManager), this);
         if (getServer().getPluginManager().getPlugin("Towny") == null ||
                 getServer().getPluginManager().getPlugin("Vault") == null) {
             getLogger().info("=============================================================");
@@ -67,14 +74,31 @@ public final class WorldDynamicsEngine extends JavaPlugin {
             getLogger().info("=============================================================");
         }
         checkForUpdates();
-        this.getCommand("wde").setExecutor(new WDECommandExecutor(nationManager, organizationManager, getEconomy()));
+        this.getCommand("wde").setExecutor(new WDECommandExecutor(nationManager, organizationManager, getEconomy(), this));
         this.getCommand("wde").setTabCompleter(new WDETabCompleter(organizationManager));
         getServer().getPluginManager().registerEvents(new NewDayListener(organizationManager), this);
         startGovernmentAutoSaveTask();
         int pluginId = 20763; // <-- Replace with the id of your plugin!
         Metrics metrics = new Metrics(this, pluginId);
+        organizationsEnabled = getConfig().getBoolean("organizations.enabled", true); // Default to true
+        armyEnabled = getConfig().getBoolean("army.enabled", true); // Default to true
+        governmentEnabled = getConfig().getBoolean("government.enabled", true); // Default to true
+
+    }
+    public HumanManager getHumanManager() {
+        return humanManager;
+    }
+    public boolean isOrganizationsEnabled() {
+        return organizationsEnabled;
     }
 
+    public boolean isArmyEnabled() {
+        return armyEnabled;
+    }
+
+    public boolean isGovernmentEnabled() {
+        return governmentEnabled;
+    }
     private void loadGovernmentTypes() {
         List<String> types = getConfig().getStringList("government_types");
         GovernmentType.loadTypes(new HashSet<>(types));
@@ -86,6 +110,7 @@ public final class WorldDynamicsEngine extends JavaPlugin {
             public void run() {
                 nationManager.saveNations();
                 organizationManager.saveOrganizations();
+                humanManager.saveHumans();
             }
         }.runTaskTimer(this, 1200L, 1200L); // 1200L = 60 seconds in ticks
     }
@@ -94,6 +119,7 @@ public final class WorldDynamicsEngine extends JavaPlugin {
     public void onDisable() {
         nationManager.saveNations();
         organizationManager.saveOrganizations();
+        humanManager.saveHumans();
     }
 
     private boolean setupEconomy() {
