@@ -98,30 +98,32 @@ public class WDECommandExecutor implements CommandExecutor {
     }
 
     private boolean displayHelp(CommandSender sender) {
-        sender.sendMessage(ChatColor.YELLOW + "WorldDynamics Engine Commands:");
-        sender.sendMessage(ChatColor.BLUE + "----------------[ Gov Commands ]----------------");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government settype <type> -" + ChatColor.WHITE + " Set your nation's government type.");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government info -" + ChatColor.WHITE + " View your nation's government type.");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government setleader <player> -" + ChatColor.WHITE + " Set the leader of your nation's government.");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government addmember <player> -" + ChatColor.WHITE + " Add a member to your nation's government.");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government kickmember <player> -" + ChatColor.WHITE + " Remove a member from your nation's government.");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government leave -" + ChatColor.WHITE + " Leave your nation's government.");
-        sender.sendMessage(ChatColor.BLUE + "----------------[ Army Commands ]----------------");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army setleader <player> -" + ChatColor.WHITE + " Set the leader of your nation's army.");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army addmember <player> -" + ChatColor.WHITE + " Add a member to your nation's army.");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army kickmember <player> -" + ChatColor.WHITE + " Remove a member from your nation's army.");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army leave -" + ChatColor.WHITE + " Leave your nation's army.");
-        sender.sendMessage(ChatColor.BLUE + "----------------[ Org Commands ]----------------");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org create <name> <type> -" + ChatColor.WHITE + " Create a new organization.");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org deposit <orgname> <amount> -" + ChatColor.WHITE + " Deposit money into an organization.");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org withdraw <orgname> <amount> -" + ChatColor.WHITE + " Withdraw money from an organization.");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org join <orgname> -" + ChatColor.WHITE + " Join an organization.");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org leave <orgname> -" + ChatColor.WHITE + " Leave an organization.");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org addmember <orgname> <user> -" + ChatColor.WHITE + " Add a member to a GOVERNMENTAL organization (OrgLeader only).");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org kickmember <orgname> <user> -" + ChatColor.WHITE + " Remove a member from an organization (OrgLeader only).");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org info <orgname> -" + ChatColor.WHITE + "Display information about an organization.");
-        sender.sendMessage(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org setattr <orgname> <attribute> -" + ChatColor.WHITE + "Set an organization's attribute.");
+        StringBuilder helpMessageBuilder = new StringBuilder();
+        helpMessageBuilder.append(ChatColor.YELLOW).append("WorldDynamics Engine Commands:\n");
+        helpMessageBuilder.append(ChatColor.BLUE).append("----------------[ Gov Commands ]----------------\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government settype <type> -" + ChatColor.WHITE + " Set your nation's government type.\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government info -" + ChatColor.WHITE + " View your nation's government type.\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government setleader <player> -" + ChatColor.WHITE + " Set the leader of your nation's government.\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government addmember <player> -" + ChatColor.WHITE + " Add a member to your nation's government.\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government kickmember <player> -" + ChatColor.WHITE + " Remove a member from your nation's government.\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government leave -" + ChatColor.WHITE + " Leave your nation's government.\n");
+        helpMessageBuilder.append(ChatColor.BLUE).append("----------------[ Army Commands ]----------------");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army setleader <player> -" + ChatColor.WHITE + " Set the leader of your nation's army.\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army addmember <player> -" + ChatColor.WHITE + " Add a member to your nation's army.\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army kickmember <player> -" + ChatColor.WHITE + " Remove a member from your nation's army.\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army leave -" + ChatColor.WHITE + " Leave your nation's army.\n");
+        helpMessageBuilder.append(ChatColor.BLUE).append("----------------[ Org Commands ]----------------\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org create <type> <name> -" + ChatColor.WHITE + " Create a new organization.\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org deposit <orgname> <amount> -" + ChatColor.WHITE + " Deposit money into an organization.\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org withdraw <orgname> <amount> -" + ChatColor.WHITE + " Withdraw money from an organization.\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org join <orgname> -" + ChatColor.WHITE + " Join an organization.\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org leave <orgname> -" + ChatColor.WHITE + " Leave an organization.\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org addmember <orgname> <user> -" + ChatColor.WHITE + " Add a member to a GOVERNMENTAL organization (OrgLeader only).\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org kickmember <orgname> <user> -" + ChatColor.WHITE + " Remove a member from an organization (OrgLeader only).\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org info <orgname> -" + ChatColor.WHITE + " Display information about an organization.\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org setattr <orgname> <attribute> -" + ChatColor.WHITE +  "Set an organization's attribute.\n");
 
+        sender.sendMessage(helpMessageBuilder.toString());
         return true;
     }
 
