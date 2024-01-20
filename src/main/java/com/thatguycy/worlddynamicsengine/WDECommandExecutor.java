@@ -11,16 +11,20 @@ import org.bukkit.ChatColor;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 
+import java.util.Arrays;
+
 public class WDECommandExecutor implements CommandExecutor {
 
     private NationManager nationManager;
+    private VotingManager votingManager;
     private OrganizationManager organizationManager;
     private HumanManager humanManager;
     private Economy economy;
     private WorldDynamicsEngine main;
 
-    public WDECommandExecutor(NationManager nationManager, OrganizationManager organizationManager, Economy economy, WorldDynamicsEngine main, HumanManager humanManager) {
+    public WDECommandExecutor(NationManager nationManager, OrganizationManager organizationManager, Economy economy, WorldDynamicsEngine main, HumanManager humanManager, VotingManager votingManager) {
         this.nationManager = nationManager;
+        this.votingManager = votingManager;
         this.organizationManager = organizationManager;
         this.humanManager = humanManager;
         this.economy = economy;
@@ -50,6 +54,8 @@ public class WDECommandExecutor implements CommandExecutor {
                     return handleGovernmentCommand(player, args);
                 case "human":
                     return handleHumanCommand(player, args);
+                case "vote":
+                    return handleVoteCommand(player, args);
                 case "nation":
                     if (args.length > 1) {
                         String nationName = args[1];
@@ -104,6 +110,62 @@ public class WDECommandExecutor implements CommandExecutor {
                 return true;
         }
     }
+
+    private boolean handleVoteCommand(Player player, String[] args) {
+        if (args.length == 1) {
+            player.sendMessage(ChatColor.RED + "Usage: /wde vote <yes/no>");
+            return true;
+        }
+        String orgCommand = args[1].toLowerCase();
+        switch (orgCommand) {
+            case "yes":
+                return handleVoteYes(player, args);
+            case "no":
+                return handleVoteNo(player, args);
+            default:
+                player.sendMessage(ChatColor.RED + "Unknown voting subcommand.");
+                return true;
+        }
+    }
+
+    private boolean handleVoteYes(Player player, String[] args) {
+        Nation nation = getNationByPlayer(player);
+        if (nation == null) {
+            player.sendMessage(ChatColor.RED + "You are not part of a nation.");
+            return true;
+        }
+
+        // Check if there's an ongoing vote in the player's nation
+        if (!votingManager.isVoteOngoing(nation)) {
+            player.sendMessage(ChatColor.RED + "There is no ongoing vote in your nation.");
+            return true;
+        }
+
+        // Cast the player's vote as 'yes'
+        votingManager.castVote(nation, player, true);
+        player.sendMessage(ChatColor.GREEN + "Your 'yes' vote has been cast.");
+        return true;
+    }
+
+    private boolean handleVoteNo(Player player, String[] args) {
+        Nation nation = getNationByPlayer(player);
+        if (nation == null) {
+            player.sendMessage(ChatColor.RED + "You are not part of a nation.");
+            return true;
+        }
+
+        // Check if there's an ongoing vote in the player's nation
+        if (!votingManager.isVoteOngoing(nation)) {
+            player.sendMessage(ChatColor.RED + "There is no ongoing vote in your nation.");
+            return true;
+        }
+
+        // Cast the player's vote as 'no'
+        votingManager.castVote(nation, player, false);
+        player.sendMessage(ChatColor.GREEN + "Your 'no' vote has been cast.");
+        return true;
+    }
+
     private boolean handleHumanCommand(Player player, String[] args) {
         if (args.length == 1) {
             player.sendMessage(ChatColor.RED + "Usage: /wde human <info>");
@@ -127,19 +189,21 @@ public class WDECommandExecutor implements CommandExecutor {
     private boolean displayHelp(CommandSender sender) {
         StringBuilder helpMessageBuilder = new StringBuilder();
         helpMessageBuilder.append(ChatColor.YELLOW).append("WorldDynamics Engine Commands:\n");
-        helpMessageBuilder.append(ChatColor.BLUE).append("----------------[ Gov Commands ]----------------\n");
+        helpMessageBuilder.append(ChatColor.BLUE).append("----------------[ Government Commands ]----------------\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government settype <type> -" + ChatColor.WHITE + " Set your nation's government type.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government info -" + ChatColor.WHITE + " View your nation's government type.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government setleader <player> -" + ChatColor.WHITE + " Set the leader of your nation's government.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government addmember <player> -" + ChatColor.WHITE + " Add a member to your nation's government.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government kickmember <player> -" + ChatColor.WHITE + " Remove a member from your nation's government.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government leave -" + ChatColor.WHITE + " Leave your nation's government.\n");
-        helpMessageBuilder.append(ChatColor.BLUE).append("----------------[ Army Commands ]----------------");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government addlaw \"<law>\" -" + ChatColor.WHITE + " Propose a new law.\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government removelaw <id> -" + ChatColor.WHITE + " Propose to remove a law.\n");
+        helpMessageBuilder.append(ChatColor.BLUE).append("----------------[ Army Commands ]----------------\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army setleader <player> -" + ChatColor.WHITE + " Set the leader of your nation's army.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army addmember <player> -" + ChatColor.WHITE + " Add a member to your nation's army.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army kickmember <player> -" + ChatColor.WHITE + " Remove a member from your nation's army.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army leave -" + ChatColor.WHITE + " Leave your nation's army.\n");
-        helpMessageBuilder.append(ChatColor.BLUE).append("----------------[ Org Commands ]----------------\n");
+        helpMessageBuilder.append(ChatColor.BLUE).append("----------------[ Organization Commands ]----------------\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org create <type> <name> -" + ChatColor.WHITE + " Create a new organization.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org deposit <orgname> <amount> -" + ChatColor.WHITE + " Deposit money into an organization.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org withdraw <orgname> <amount> -" + ChatColor.WHITE + " Withdraw money from an organization.\n");
@@ -149,10 +213,13 @@ public class WDECommandExecutor implements CommandExecutor {
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org kickmember <orgname> <user> -" + ChatColor.WHITE + " Remove a member from an organization (OrgLeader only).\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org info <orgname> -" + ChatColor.WHITE + " Display information about an organization.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org setattr <orgname> <attribute> -" + ChatColor.WHITE +  "Set an organization's attribute.\n");
+        helpMessageBuilder.append(ChatColor.BLUE).append("----------------[ Voting Commands ]----------------\n");
+        helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " vote <yes/no> -" + ChatColor.WHITE + " Vote on a current proposal.\n");
 
         sender.sendMessage(helpMessageBuilder.toString());
         return true;
     }
+
 
     private boolean handleGovernmentCommand(Player player, String[] args) {
         if (!(main.isGovernmentEnabled())) {
@@ -192,6 +259,10 @@ public class WDECommandExecutor implements CommandExecutor {
                 return handleKickGovMember(player, args);
             } else if (govCommand.equals("leave")) {
                 return handleGovMemberLeave(player);
+            } else if (govCommand.equals("addlaw")) {
+                return handleAddLaw(player, args);
+            } else if (govCommand.equals("removelaw")) {
+                return handleRemoveLaw(player, args);
             } else {
                 player.sendMessage(ChatColor.RED + "Unknown subcommand.");
                 return true;
@@ -419,6 +490,116 @@ public class WDECommandExecutor implements CommandExecutor {
         nationManager.saveNations();
         player.sendMessage(ChatColor.GREEN + "Army leader set to " + leaderName);
         return true;
+    }
+
+    public boolean handleAddLaw(Player player, String[] args) {
+        // Check if the player is a Nation Leader or Government Leader
+        Nation nation = getNationByPlayer(player);
+        if (!isGovernmentLeader(player, nation) && !isNationLeader(player, nation)) {
+            player.sendMessage(ChatColor.RED + "You do not have the permission to add laws.");
+            return true;
+        }
+
+        // Check if the law text is provided in the command
+        if (args.length < 3) {
+            player.sendMessage(ChatColor.RED + "Usage: /wde government addlaw \"<law>\"");
+            return true;
+        }
+
+        // Concatenate the arguments to form the law text
+        String law = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+
+        // Check if the player is part of a nation
+        if (nation == null) {
+            player.sendMessage(ChatColor.RED + "You are not part of a nation.");
+            return true;
+        }
+
+        // Retrieve nation properties
+        NationProperties properties = nationManager.getNationProperties(nation.getName());
+
+        // Check the government type and act accordingly
+        if ("DICTATORSHIP".equalsIgnoreCase(properties.getGovernmentType())) {
+            // Directly add the law for dictatorship
+            properties.addLaw(law);
+            player.sendMessage(ChatColor.GREEN + "Law added successfully.");
+        } else {
+            // Format the law for the voting system
+            String formattedLaw = "AddLaw: " + law;
+            // Start a vote for other government types
+            votingManager.startVote(nation, formattedLaw);
+            player.sendMessage(ChatColor.YELLOW + "A vote has been started for the law: " + law);
+        }
+        nationManager.saveNations();
+        return true;
+    }
+
+
+    public boolean handleRemoveLaw(Player player, String[] args) {
+        // Check if the player is a Nation Leader or Government Leader
+        Nation nation = getNationByPlayer(player);
+        if (!isGovernmentLeader(player, nation) && !isNationLeader(player, nation)) {
+            player.sendMessage(ChatColor.RED + "You do not have the permission to remove laws.");
+            return true;
+        }
+
+        // Check if the law ID is provided in the command
+        if (args.length < 3) {
+            player.sendMessage(ChatColor.RED + "Usage: /wde government removelaw <id>");
+            return true;
+        }
+
+        int lawId;
+        try {
+            lawId = Integer.parseInt(args[2]);
+        } catch (NumberFormatException e) {
+            player.sendMessage(ChatColor.RED + "Invalid law ID. Please enter a valid number.");
+            return true;
+        }
+
+        if (nation == null) {
+            player.sendMessage(ChatColor.RED + "You are not part of a nation.");
+            return true;
+        }
+
+        NationProperties properties = nationManager.getNationProperties(nation.getName());
+        if ("DICTATORSHIP".equalsIgnoreCase(properties.getGovernmentType())) {
+            properties.removeLaw(lawId); // Directly remove the law for dictatorship
+            player.sendMessage(ChatColor.GREEN + "Law removed successfully.");
+        } else {
+            // Format a unique string for the law removal vote
+            String voteForRemoval = "RemoveLaw: " + lawId;
+            votingManager.startVote(nation, voteForRemoval); // Start a vote for removing the law
+            player.sendMessage(ChatColor.YELLOW + "A vote has been started to remove the law: ID " + lawId);
+        }
+        nationManager.saveNations();
+        return true;
+    }
+
+
+    // Placeholder method for getting the Nation by a player (to be implemented)
+    private Nation getNationByPlayer(Player player) {
+        try {
+            // Get the Resident object for the player
+            Resident resident = TownyUniverse.getInstance().getResident(player.getName());
+
+            // Check if the resident is in a town
+            if (!resident.hasTown()) {
+                return null; // Player is not in a town
+            }
+
+            Town town = resident.getTown();
+
+            // Check if the town is in a nation
+            if (!town.hasNation()) {
+                return null; // Town is not part of a nation
+            }
+
+            return town.getNation();
+        } catch (NotRegisteredException e) {
+            // Handle the exception (player not registered, town or nation not found)
+            return null;
+        }
     }
 
     private boolean isNationLeader(Player player, Nation nation) {

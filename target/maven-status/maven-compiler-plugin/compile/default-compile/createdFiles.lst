@@ -1,4 +1,5 @@
 com\thatguycy\worlddynamicsengine\HumanManager.class
+com\thatguycy\worlddynamicsengine\VotingManager.class
 com\thatguycy\worlddynamicsengine\OrganizationProperties$OrganizationAttribute.class
 com\thatguycy\worlddynamicsengine\WorldDynamicsEngine$1.class
 com\thatguycy\worlddynamicsengine\NationManager.class
@@ -6,10 +7,12 @@ com\thatguycy\worlddynamicsengine\NationProperties.class
 com\thatguycy\worlddynamicsengine\WorldDynamicsEngine.class
 com\thatguycy\worlddynamicsengine\HumanProperties.class
 com\thatguycy\worlddynamicsengine\PlayerJoinListener.class
+com\thatguycy\worlddynamicsengine\VotingManager$1.class
 com\thatguycy\worlddynamicsengine\WDETabCompleter.class
 com\thatguycy\worlddynamicsengine\OrganizationManager.class
 com\thatguycy\worlddynamicsengine\OrganizationProperties.class
+com\thatguycy\worlddynamicsengine\VotingManager$Vote.class
 com\thatguycy\worlddynamicsengine\GovernmentType.class
 com\thatguycy\worlddynamicsengine\OrganizationProperties$OrganizationType.class
 com\thatguycy\worlddynamicsengine\WDECommandExecutor.class
-com\thatguycy\worlddynamicsengine\WorldDynamicsEngine$2.class
+com\thatguycy\worlddynamicsengine\TownyNewDayListener.class

@@ -70,9 +70,10 @@ public final class WorldDynamicsEngine extends JavaPlugin {
         nationManager = new NationManager(this);
         organizationManager = new OrganizationManager(this.getDataFolder());
         humanManager = new HumanManager(this.getDataFolder());
+        VotingManager votingManager = new VotingManager(nationManager, this); // 'this' refers to your JavaPlugin instance
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(humanManager), this);
         checkForUpdates();
-        this.getCommand("wde").setExecutor(new WDECommandExecutor(nationManager, organizationManager, getEconomy(), this, humanManager));
+        this.getCommand("wde").setExecutor(new WDECommandExecutor(nationManager, organizationManager, getEconomy(), this, humanManager, votingManager));
         getServer().getPluginManager().registerEvents(new TownyNewDayListener(this), this);
         this.getCommand("wde").setTabCompleter(new WDETabCompleter(organizationManager));
         startGovernmentAutoSaveTask();

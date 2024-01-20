@@ -17,23 +17,24 @@ public class WDETabCompleter implements TabCompleter {
     public WDETabCompleter(OrganizationManager organizationManager) {
         this.organizationManager = organizationManager;
     }
-
-    @Override
+@Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (command.getName().equalsIgnoreCase("wde")) {
             if (args.length == 1) {
                 // First argument completion (main subcommands)
-                return getListOfStringsMatchingLastWord(args, "government", "help", "nation", "army", "org");
+                return getListOfStringsMatchingLastWord(args, "government", "help", "nation", "army", "org", "vote");
             } else if (args.length == 2) {
                 switch (args[0].toLowerCase()) {
                     case "government":
-                        return getListOfStringsMatchingLastWord(args, "settype", "info", "leave", "setleader", "addmember", "kickmember");
+                        return getListOfStringsMatchingLastWord(args, "settype", "info", "leave", "setleader", "addmember", "kickmember", "addlaw", "removelaw");
                     case "nation":
                         return getListOfNations();
                     case "army":
                         return getListOfStringsMatchingLastWord(args, "leave", "setleader", "addmember", "kickmember");
                     case "org":
                         return getListOfStringsMatchingLastWord(args, "create", "deposit", "withdraw", "join", "leave", "addmember", "kickmember", "info", "setattr");
+                    case "vote":
+                        return getListOfStringsMatchingLastWord(args, "yes", "no");
                 }
             } else if (args.length == 3) {
                 if (args[0].equalsIgnoreCase("government") && args[1].equalsIgnoreCase("settype")) {
@@ -64,6 +65,7 @@ public class WDETabCompleter implements TabCompleter {
         }
         return null;
     }
+
 
     private List<String> getListOfStringsMatchingLastWord(String[] args, String... completions) {
         String lastWord = args[args.length - 1].toLowerCase();

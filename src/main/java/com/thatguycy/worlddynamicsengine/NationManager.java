@@ -47,6 +47,14 @@ public class NationManager {
                 properties.setArmyLeader(armyLeader);
                 armyMembers.forEach(properties::addArmyMember);
 
+                if (nationsConfig.isConfigurationSection("nations." + nationName + ".Laws")) {
+                    for (String lawId : nationsConfig.getConfigurationSection("nations." + nationName + ".Laws").getKeys(false)) {
+                        String law = nationsConfig.getString("nations." + nationName + ".Laws." + lawId);
+                        properties.addLaw(law);
+                    }
+                }
+
+
                 nations.put(nationName, properties);
             }
         }
@@ -66,7 +74,9 @@ public class NationManager {
             }
             nationsConfig.set("nations." + nationName + ".ArmyMembers", new ArrayList<>(properties.getArmyMembers()));
 
-            // Save other properties as needed
+            for (Map.Entry<Integer, String> lawEntry : properties.getLaws().entrySet()) {
+                nationsConfig.set("nations." + nationName + ".Laws." + lawEntry.getKey(), lawEntry.getValue());
+            }
         }
         try {
             nationsConfig.save(nationsFile);
