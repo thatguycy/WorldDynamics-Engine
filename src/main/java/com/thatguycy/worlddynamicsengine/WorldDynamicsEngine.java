@@ -23,10 +23,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static com.palmergames.bukkit.towny.TownyEconomyHandler.setupEconomy;
 import static org.bukkit.Bukkit.getServer;
@@ -80,10 +77,7 @@ public final class WorldDynamicsEngine extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TownyNewDayListener(this), this);
         this.getCommand("wde").setTabCompleter(new WDETabCompleter(organizationManager));
         // Register towny subcommands
-        AddonCommand wdeCommand = new AddonCommand(TownyCommandAddonAPI.CommandType.TOWNY, "wde", new WDECommandExecutor(nationManager, organizationManager, getEconomy(), this, humanManager, votingManager));
-        wdeCommand.setTabCompletion(0, Arrays.asList("suggestions", "for", "first", "argument"));
-        wdeCommand.setTabCompletion(1, Arrays.asList("suggestions", "for", "second", "argument"));
-        TownyCommandAddonAPI.addSubCommand(wdeCommand);
+        TownyCommandAddonAPI.addSubCommand(TownyCommandAddonAPI.CommandType.TOWNY, "wde", new WDECommandExecutor(nationManager, organizationManager, getEconomy(), this, humanManager, votingManager));
         startGovernmentAutoSaveTask();
         int pluginId = 20763; // <-- Replace with the id of your plugin!
         Metrics metrics = new Metrics(this, pluginId);

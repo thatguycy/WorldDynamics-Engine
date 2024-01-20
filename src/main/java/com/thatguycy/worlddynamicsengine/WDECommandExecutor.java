@@ -38,7 +38,7 @@ public class WDECommandExecutor implements CommandExecutor {
             }
 
             if (!(sender instanceof Player)) {
-                sender.sendMessage(ChatColor.RED + "This command can only be used by a player.");
+                sender.sendMessage(ChatColor.RED + "WDE commands can only be used by players");
                 return true;
             }
 
@@ -47,16 +47,22 @@ public class WDECommandExecutor implements CommandExecutor {
 
             switch (subCommand) {
                 case "org":
+                    if (!sender.hasPermission("wde.org")) return true;
                     return handleOrgCommand(player, args);
                 case "army":
+                    if (!sender.hasPermission("wde.army")) return true;
                     return handleArmyCommand(player, args);
                 case "government":
+                    if (!sender.hasPermission("wde.government")) return true;
                     return handleGovernmentCommand(player, args);
                 case "human":
+                    if (!sender.hasPermission("wde.human")) return true;
                     return handleHumanCommand(player, args);
                 case "vote":
+                    if (!sender.hasPermission("wde.vote")) return true;
                     return handleVoteCommand(player, args);
                 case "nation":
+                    if (!sender.hasPermission("wde.nation")) return true;
                     if (args.length > 1) {
                         String nationName = args[1];
                         nationManager.displayNationInfo(sender, nationName);
@@ -189,7 +195,7 @@ public class WDECommandExecutor implements CommandExecutor {
     private boolean displayHelp(CommandSender sender) {
         StringBuilder helpMessageBuilder = new StringBuilder();
         helpMessageBuilder.append(ChatColor.YELLOW).append("WorldDynamics Engine Commands:\n");
-        helpMessageBuilder.append(ChatColor.BLUE).append("----------------[ Government Commands ]----------------\n");
+        helpMessageBuilder.append(ChatColor.BLUE).append("---------------[ Government Commands ]---------------\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government settype <type> -" + ChatColor.WHITE + " Set your nation's government type.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government info -" + ChatColor.WHITE + " View your nation's government type.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government setleader <player> -" + ChatColor.WHITE + " Set the leader of your nation's government.\n");
@@ -198,12 +204,12 @@ public class WDECommandExecutor implements CommandExecutor {
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government leave -" + ChatColor.WHITE + " Leave your nation's government.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government addlaw \"<law>\" -" + ChatColor.WHITE + " Propose a new law.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " government removelaw <id> -" + ChatColor.WHITE + " Propose to remove a law.\n");
-        helpMessageBuilder.append(ChatColor.BLUE).append("----------------[ Army Commands ]----------------\n");
+        helpMessageBuilder.append(ChatColor.BLUE).append("-----------------[ Army Commands ]-----------------\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army setleader <player> -" + ChatColor.WHITE + " Set the leader of your nation's army.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army addmember <player> -" + ChatColor.WHITE + " Add a member to your nation's army.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army kickmember <player> -" + ChatColor.WHITE + " Remove a member from your nation's army.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " army leave -" + ChatColor.WHITE + " Leave your nation's army.\n");
-        helpMessageBuilder.append(ChatColor.BLUE).append("----------------[ Organization Commands ]----------------\n");
+        helpMessageBuilder.append(ChatColor.BLUE).append("-------------[ Organization Commands ]-------------\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org create <type> <name> -" + ChatColor.WHITE + " Create a new organization.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org deposit <orgname> <amount> -" + ChatColor.WHITE + " Deposit money into an organization.\n");
         helpMessageBuilder.append(ChatColor.GOLD + "/wde" + ChatColor.YELLOW + " org withdraw <orgname> <amount> -" + ChatColor.WHITE + " Withdraw money from an organization.\n");
