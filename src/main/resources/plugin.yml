@@ -15,3 +15,15 @@ permissions:
   wde.help:
     description: Allows using the help subcommand of /wde
     default: true
+  wde.org:
+    default: true
+  wde.army:
+    default: true
+  wde.government:
+    default: true
+  wde.human:
+    default: true
+  wde.vote:
+    default: true
+  wde.nation:
+    default: true
