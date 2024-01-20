@@ -74,6 +74,11 @@ Instructions on how to install the WorldDynamics Engine plugin.
 - **1)** Place WorldDynamicsEngine-X.X.jar in the "plugins" folder.
 - **2)** Install [TownyAdvanced](https://www.spigotmc.org/resources/towny-advanced.72694/) and [Vault](https://www.spigotmc.org/resources/vault.34315/), these are both **essential**.
 
+## Development
+![]([https://github.com/thatguycy/WorldDynamics-Engine/assets/33783071/0fc3c5a9-2ccd-4385-b5e4-157f3bd78309](https://i.imgur.com/jddoKaq.png))
+
+**WorldDynamics Engine** is actively developed by me, ThatGuyCy, or Harvey! I do this in my own time, for free, while in full-time education and working, so it's certainly alot! While I'm trying to provide the best support for plugin and the userbase I can, I apologise if I can't do everything all at once. **Exor**, previously ExorEarth or ExorMC, is my personal Minecraft Server that inspired this plugin, since becoming a server, it's now turned into a development partnership between me and Phantom, the old manager of the server, you'll probably see him floating around on here, although he doesn't work on the plugin directly, he manages user relations and triaging bug reports, etc. If you feel so kind, feel free to sponsor us! Go ahead and press the sponsor button at the top of the page. If you want to help us another way, star this repository, contribute if you can, and leave us 5 stars on [spigot](https://www.spigotmc.org/resources/worlddynamics-engine.114509/).
+
 ## License
 
 This project is licensed under the [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) - see the [LICENSE](https://github.com/thatguycy/WorldDynamics-Engine/blob/main/LICENSE) file for details.
