@@ -38,12 +38,13 @@ public final class WorldDynamicsEngine extends JavaPlugin {
     private boolean organizationsEnabled;
     private boolean armyEnabled;
     private boolean governmentEnabled;
+    private static int lawVoteTime;
+    private int autoSaveInterval;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         reloadConfig();
-        loadGovernmentTypes();
         if (getServer().getPluginManager().getPlugin("Towny") == null ||
                 getServer().getPluginManager().getPlugin("Vault") == null) {
             getLogger().warning("=============================================================");
@@ -55,7 +56,13 @@ public final class WorldDynamicsEngine extends JavaPlugin {
             getLogger().warning("=============================================================");
             getServer().getPluginManager().disablePlugin(this);
         } else if (!setupEconomy()) {
-            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+            getLogger().warning("=============================================================");
+            getLogger().warning(" WorldDynamics Engine failed to start!");
+            getLogger().warning(" Reason: Unable to setup economy!");
+            getLogger().warning(" Notes: Try adding an economy plugin, or report this issue!");
+            getLogger().warning(" Version: " + this.getDescription().getVersion());
+            getLogger().warning(" Craft complex worlds and shape geopolitical adventures!");
+            getLogger().warning("=============================================================");
             getServer().getPluginManager().disablePlugin(this);
         } else {
             Plugin towny = getServer().getPluginManager().getPlugin("Towny");
@@ -67,24 +74,28 @@ public final class WorldDynamicsEngine extends JavaPlugin {
             getLogger().info(" Craft complex worlds and shape geopolitical adventures!");
             getLogger().info("=============================================================");
         }
-        nationManager = new NationManager(this);
-        organizationManager = new OrganizationManager(this.getDataFolder());
-        humanManager = new HumanManager(this.getDataFolder());
-        VotingManager votingManager = new VotingManager(nationManager, this); // 'this' refers to your JavaPlugin instance
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(humanManager), this);
-        checkForUpdates();
-        this.getCommand("wde").setExecutor(new WDECommandExecutor(nationManager, organizationManager, getEconomy(), this, humanManager, votingManager));
-        getServer().getPluginManager().registerEvents(new TownyNewDayListener(this), this);
-        this.getCommand("wde").setTabCompleter(new WDETabCompleter(organizationManager));
-        // Register towny subcommands
-        TownyCommandAddonAPI.addSubCommand(TownyCommandAddonAPI.CommandType.TOWNY, "wde", new WDECommandExecutor(nationManager, organizationManager, getEconomy(), this, humanManager, votingManager));
-        startGovernmentAutoSaveTask();
-        int pluginId = 20763; // <-- Replace with the id of your plugin!
-        Metrics metrics = new Metrics(this, pluginId);
+        // Get config settings
         organizationsEnabled = getConfig().getBoolean("organizations.enabled", true); // Default to true
         armyEnabled = getConfig().getBoolean("army.enabled", true); // Default to true
         governmentEnabled = getConfig().getBoolean("government.enabled", true); // Default to true
-
+        lawVoteTime = getConfig().getInt("government.law-vote-time", 120); // Default to 120 seconds
+        autoSaveInterval = getConfig().getInt("misc.auto-save-interval", 60) * 20; // Default to 60 seconds, multiply by tickrate
+        // Initialize other classes
+        loadGovernmentTypes();
+        nationManager = new NationManager(this);
+        organizationManager = new OrganizationManager(this.getDataFolder());
+        humanManager = new HumanManager(this.getDataFolder());
+        VotingManager votingManager = new VotingManager(nationManager, this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(humanManager), this);
+        getServer().getPluginManager().registerEvents(new TownyNewDayListener(this), this);
+        checkForUpdates();
+        // Setup command executor, tab completion and register a towny subcommand
+        CommandExecutor commandExecutor = new WDECommandExecutor(nationManager, organizationManager, getEconomy(), this, humanManager, votingManager);
+        this.getCommand("wde").setExecutor(commandExecutor);
+        this.getCommand("wde").setTabCompleter(new WDETabCompleter(organizationManager));
+        TownyCommandAddonAPI.addSubCommand(TownyCommandAddonAPI.CommandType.TOWNY, "wde", commandExecutor);
+        Metrics metrics = new Metrics(this, 20763); // Bstats
+        startGovernmentAutoSaveTask();
     }
     public HumanManager getHumanManager() {
         return humanManager;
@@ -100,6 +111,7 @@ public final class WorldDynamicsEngine extends JavaPlugin {
     public boolean isGovernmentEnabled() {
         return governmentEnabled;
     }
+    public static int lawVotingTime(){return lawVoteTime;}
     private void loadGovernmentTypes() {
         List<String> types = getConfig().getStringList("government_types");
         GovernmentType.loadTypes(new HashSet<>(types));
@@ -141,7 +153,7 @@ public final class WorldDynamicsEngine extends JavaPlugin {
                 organizationManager.saveOrganizations();
                 humanManager.saveHumans();
             }
-        }.runTaskTimer(this, 1200L, 1200L); // 1200L = 60 seconds in ticks
+        }.runTaskTimer(this, autoSaveInterval, autoSaveInterval);
     }
 
     @Override
@@ -152,9 +164,6 @@ public final class WorldDynamicsEngine extends JavaPlugin {
     }
 
     private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
-        }
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             return false;
