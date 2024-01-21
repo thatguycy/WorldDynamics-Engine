@@ -23,6 +23,18 @@ WorldDynamics Engine is a sophisticated roleplay plugin designed for geopolitica
 **Want to be on the hall of fame? Well, you'd best be thinking about contributing!**
 
 <table>
+    <tr>
+        <th style="width:221%" colspan="2"><b>Servers using WDE</b></th>
+    </tr>
+    <tr>
+        <td><a>ExorEarth</a></td>
+        <td>exorearth.thatguycy.com</td>
+    </tr>
+</table>
+
+**Open an issue request to have your server added here!**
+
+<table>
     <tr><th>Minecraft Version</th><th>Towny Version</th><th>WDE Version</th></tr>
     <tr align=center><td>MC 1.20.*</td><td rowspan=5>Use <a href=https://github.com/TownyAdvanced/Towny/releases/tag/0.100.1.0>0.100.1.0</a> or <a href=https://github.com/TownyAdvanced/Towny/releases>the Latest Pre-Release.</a></td><td><a href= https://github.com/thatguycy/WorldDynamics-Engine>WDE Version 0.1.*</td></tr>
     <tr align=center><td>MC 1.19.*</td><td rowspan="4">Untested</td></tr>
