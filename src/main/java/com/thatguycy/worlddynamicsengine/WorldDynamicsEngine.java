@@ -38,6 +38,8 @@ public final class WorldDynamicsEngine extends JavaPlugin {
     private boolean organizationsEnabled;
     private boolean armyEnabled;
     private boolean governmentEnabled;
+    private static int lawVoteTime;
+    private int autoSaveInterval;
 
     @Override
     public void onEnable() {
@@ -84,7 +86,8 @@ public final class WorldDynamicsEngine extends JavaPlugin {
         organizationsEnabled = getConfig().getBoolean("organizations.enabled", true); // Default to true
         armyEnabled = getConfig().getBoolean("army.enabled", true); // Default to true
         governmentEnabled = getConfig().getBoolean("government.enabled", true); // Default to true
-
+        lawVoteTime = getConfig().getInt("government.law-vote-time", 120); // Default to 120 seconds
+        autoSaveInterval = getConfig().getInt("misc.auto-save-interval", 60) * 20; // Default to 60 seconds, multiply by tickrate
     }
     public HumanManager getHumanManager() {
         return humanManager;
@@ -100,6 +103,7 @@ public final class WorldDynamicsEngine extends JavaPlugin {
     public boolean isGovernmentEnabled() {
         return governmentEnabled;
     }
+    public static int lawVotingTime(){return lawVoteTime;}
     private void loadGovernmentTypes() {
         List<String> types = getConfig().getStringList("government_types");
         GovernmentType.loadTypes(new HashSet<>(types));
@@ -141,7 +145,7 @@ public final class WorldDynamicsEngine extends JavaPlugin {
                 organizationManager.saveOrganizations();
                 humanManager.saveHumans();
             }
-        }.runTaskTimer(this, 1200L, 1200L); // 1200L = 60 seconds in ticks
+        }.runTaskTimer(this, autoSaveInterval, autoSaveInterval);
     }
 
     @Override
@@ -152,9 +156,6 @@ public final class WorldDynamicsEngine extends JavaPlugin {
     }
 
     private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
-        }
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             return false;
