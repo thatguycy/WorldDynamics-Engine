@@ -28,7 +28,7 @@ public class VotingManager {
             this.nation = nation;
             this.law = law;
             this.votes = new HashMap<>();
-            this.endTime = System.currentTimeMillis() + 10000; // 120 seconds from now
+            this.endTime = System.currentTimeMillis() + (WorldDynamicsEngine.lawVotingTime() * 1000L);
         }
     }
 

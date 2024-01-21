@@ -35,3 +35,12 @@ army:
 ########################################################
 government:
   enabled: true
+  # Law vote time is in seconds
+  law-vote-time: 120
+
+########################################################
+# MISC ---> Configure how the plugin works!            #
+########################################################
+misc:
+  # Auto save is in seconds
+  auto-save: 60
