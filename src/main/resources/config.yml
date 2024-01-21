@@ -41,6 +41,7 @@ government:
 ########################################################
 # MISC ---> Configure how the plugin works!            #
 ########################################################
+config-version: 0.1.8 # Don't touch this, it'll break your configuration file, trust me!
 misc:
   # Auto save is in seconds
   auto-save: 60

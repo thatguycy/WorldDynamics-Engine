@@ -7,7 +7,7 @@
 
   <groupId>com.thatguycy</groupId>
   <artifactId>WorldDynamicsEngine</artifactId>
-  <version>0.1.7</version>
+  <version>0.1.8</version>
   <packaging>jar</packaging>
 
   <name>WorldDynamicsEngine</name>
@@ -80,6 +80,10 @@
           <id>apache.snapshots</id>
           <url>https://repository.apache.org/snapshots/</url>
       </repository>
+      <repository>
+          <id>glaremasters repo</id>
+          <url>https://repo.glaremasters.me/repository/towny/</url>
+      </repository>
   </repositories>
 
 
@@ -89,6 +93,11 @@
           <artifactId>spigot-api</artifactId>
           <version>1.20.4-R0.1-SNAPSHOT</version>
           <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>io.github.townyadvanced.commentedconfiguration</groupId>
+          <artifactId>CommentedConfiguration</artifactId>
+          <version>1.0.0</version>
       </dependency>
       <dependency>
           <groupId>com.github.TownyAdvanced</groupId>

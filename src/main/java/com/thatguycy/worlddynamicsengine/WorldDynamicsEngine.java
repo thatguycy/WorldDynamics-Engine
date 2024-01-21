@@ -1,9 +1,14 @@
 package com.thatguycy.worlddynamicsengine;
 import com.palmergames.bukkit.towny.TownyCommandAddonAPI;
 import com.palmergames.bukkit.towny.object.AddonCommand;
+import io.github.townyadvanced.commentedconfiguration.CommentedConfiguration;
+import io.github.townyadvanced.commentedconfiguration.setting.Settings;
+import io.github.townyadvanced.commentedconfiguration.setting.TypedValueNode;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.Plugin;
@@ -20,9 +25,13 @@ import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 import static com.palmergames.bukkit.towny.TownyEconomyHandler.setupEconomy;
@@ -39,12 +48,37 @@ public final class WorldDynamicsEngine extends JavaPlugin {
     private boolean armyEnabled;
     private boolean governmentEnabled;
     private static int lawVoteTime;
+    private Settings settings;
     private int autoSaveInterval;
 
     @Override
     public void onEnable() {
-        saveDefaultConfig();
-        reloadConfig();
+        Path configPath = this.getDataFolder().toPath().resolve("config.yml");
+        List<TypedValueNode<?>> defaultNodes = Arrays.asList(
+                INTEREST,
+                INTEREST_ENABLED,
+                INTEREST_MAXRATE,
+                INTEREST_MINRATE,
+                GOVERNMENT_TYPES,
+                ORGANIZATIONS,
+                ORGANIZATIONS_ENABLED,
+                ARMY,
+                ARMY_ENABLED,
+                GOVERNMENT,
+                GOVERNMENT_ENABLED,
+                GOVERNMENT_LAW_VOTE_TIME,
+                CONFIG_VERSION,
+                MISC,
+                MISC_AUTO_SAVE
+        );
+
+        settings = new Settings(configPath, this, defaultNodes);
+
+        if (!settings.load()) {
+            getLogger().severe("Failed to load configuration!");
+            this.getPluginLoader().disablePlugin(this);
+            return;
+        }
         if (getServer().getPluginManager().getPlugin("Towny") == null ||
                 getServer().getPluginManager().getPlugin("Vault") == null) {
             getLogger().warning("=============================================================");
@@ -111,6 +145,63 @@ public final class WorldDynamicsEngine extends JavaPlugin {
     public boolean isGovernmentEnabled() {
         return governmentEnabled;
     }
+
+    private void checkAndUpdateConfig() {
+        String currentConfigVersion = "0.1.8"; // Update this with each config layout change
+        if (!getConfig().contains("config-version")) {
+            // Config version key doesn't exist, so it's an old or default config
+            updateConfig(currentConfigVersion);
+        } else {
+            String configVersion = getConfig().getString("config-version", "0.0");
+            if (!configVersion.equals(currentConfigVersion)) {
+                // Config is outdated, update it
+                updateConfig(currentConfigVersion);
+            }
+        }
+    }
+
+
+    private void mergeConfig() throws IOException {
+        // Load the default configuration from the plugin's resources
+        FileConfiguration defaultConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(getResource("config.yml")));
+
+        // Load the actual configuration from the server's plugin data folder
+        CommentedConfiguration actualConfig = (CommentedConfiguration) CommentedConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
+
+        boolean configUpdated = false;
+
+        for (String key : defaultConfig.getKeys(true)) {
+            if (!actualConfig.contains(key)) {
+                actualConfig.set(key, defaultConfig.get(key));
+                configUpdated = true;
+            }
+        }
+
+        if (configUpdated) {
+            // Save the updated configuration back to the file
+            actualConfig.save(new File(getDataFolder(), "config.yml"));
+        }
+    }
+
+    private void updateConfig(String newVersion) {
+        File configFile = new File(getDataFolder(), "config.yml");
+        File backupFile = new File(getDataFolder(), "config-backup-" + System.currentTimeMillis() + ".yml");
+
+        try {
+            // Backup the old config
+            if (configFile.exists()) {
+                Files.copy(configFile.toPath(), backupFile.toPath());
+            }
+
+            getConfig().set("config-version", newVersion);
+
+            saveConfig();
+        } catch (IOException e) {
+            e.printStackTrace();
+            getLogger().severe("Failed to update the config file!");
+        }
+    }
+
     public static int lawVotingTime(){return lawVoteTime;}
     private void loadGovernmentTypes() {
         List<String> types = getConfig().getStringList("government_types");

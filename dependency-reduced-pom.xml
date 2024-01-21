@@ -4,7 +4,7 @@
   <groupId>com.thatguycy</groupId>
   <artifactId>WorldDynamicsEngine</artifactId>
   <name>WorldDynamicsEngine</name>
-  <version>0.1.7</version>
+  <version>0.1.8</version>
   <description>WorldDynamics Engine is a Minecraft plugin that adds dynamic policies to your world!</description>
   <url>https://github.com/thatguycy/WorldDynamics-Engine</url>
   <build>
@@ -65,6 +65,10 @@
     <repository>
       <id>apache.snapshots</id>
       <url>https://repository.apache.org/snapshots/</url>
+    </repository>
+    <repository>
+      <id>glaremasters repo</id>
+      <url>https://repo.glaremasters.me/repository/towny/</url>
     </repository>
   </repositories>
   <dependencies>
