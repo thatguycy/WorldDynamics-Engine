@@ -5,6 +5,8 @@
 
 **|** [**Documentation**](https://docs.thatguycy.com/) **|** [**Spigot**](https://www.spigotmc.org/resources/worlddynamics-engine.114509/) **|** [**Modrinth**](https://modrinth.com/plugin/worlddynamics-engine) **|**
 
+**UPDATE:** Hello! This plugin has grown immensely recently and I'm so glad we're off to an amazing start! Currently, only bug fixes / patches are being released for v0.1.x (this branch) as we're working on the v0.2.x branch! It's going to be worth the wait, trust me, you can track development on our [discord](https://discord.gg/ssSzhBSwFj), we're added QOL improvements such as a GUI and a better structure in the code to make addons for our plugin easier to make. We'll also be having an independant framework option if you don't want to use Towny, we'll also be making other frameworks such as GriefPrevention. It goes without saying, many new features are coming such as military/spy intelligence and coup d'état, and of course many other operations which are possible. Also in the works is addons to EventWar and SiegeWar. Happy playing!
+
 ## Description
 
 More than just a Towny Addon, it's a **Towny Essential Upgrade**!
