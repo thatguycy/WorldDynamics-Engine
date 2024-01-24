@@ -1,0 +1,18 @@
+###########################################################
+# CONFIGURATION MISC                                      #
+###########################################################
+# Below are things related to the config, you shouldn't   #
+# typically edit these, unless you know what you're doing #
+###########################################################
+
+config-version: 1.0
+config-codename: aedificium
+
+###########################################################
+# PLUGIN MISC                                             #
+###########################################################
+# Below are things related to the plugin, these you can   #
+# edit, regarding you consult the documentation correctly #
+###########################################################
+
+framework: towny # What framework you're using, currently only "towny" is supported, in the future, expect "independent" and "grief-prevention"
