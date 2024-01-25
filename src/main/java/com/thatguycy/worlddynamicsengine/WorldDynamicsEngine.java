@@ -1,6 +1,8 @@
 package com.thatguycy.worlddynamicsengine;
 
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.io.BufferedReader;
@@ -10,9 +12,19 @@ import java.net.URL;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class WorldDynamicsEngine extends JavaPlugin {
+    private CommandHandler commandHandler;
     private Economy economy;
+    private NationManager nationManager;
+
     @Override
     public void onEnable() {
+        ConfigurationSerialization.registerClass(WDEnation.class);
+        commandHandler = new CommandHandler(this);
+        nationManager = new NationManager(this);
+        saveDefaultConfig(); // Step 1
+        getConfig(); // Step 2
+        // getConfig().options().copyDefaults(true); // Step 3
+        updateConfig(); // Step 4
         if (!checkDependencies()) {
             getLogger().severe("Missing required dependencies. Disabling WorldDynamics Engine.");
             getServer().getPluginManager().disablePlugin(this);
@@ -31,6 +43,39 @@ public class WorldDynamicsEngine extends JavaPlugin {
                 getLogger().info("============================================================");
             }
         }.runTaskAsynchronously(this);
+
+        // Commands
+        commandHandler.registerSubCommand("help", new HelpCommand());
+        commandHandler.registerSubCommand("test", new TestNationCommand(nationManager));
+
+        // Misc
+        nationManager.enableAutoSave();
+    }
+
+    private void updateConfig() {
+        FileConfiguration config = getConfig();
+        boolean configUpdated = false;
+
+        // Check and update the config version
+        if (!config.isSet("config-version") || !config.getString("config-version").equals("1.0")) {
+            config.set("config-version", "1.0");
+            configUpdated = true;
+        }
+
+        // Check and update the framework settings
+        if (!config.isSet("framework.TownyAdvanced")) {
+            config.set("framework.TownyAdvanced", true);
+            configUpdated = true;
+        }
+        if (!config.isSet("framework.Independent")) {
+            config.set("framework.Independent", false); // Currently not available
+            configUpdated = true;
+        }
+
+        // Save the config if it was updated
+        if (configUpdated) {
+            saveConfig();
+        }
     }
 
     private boolean checkDependencies() {
@@ -78,6 +123,6 @@ public class WorldDynamicsEngine extends JavaPlugin {
     }
     @Override
     public void onDisable() {
-
+        saveConfig();
     }
 }

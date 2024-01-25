@@ -1,1 +1,5 @@
 com\thatguycy\worlddynamicsengine\WorldDynamicsEngine.class
+com\thatguycy\worlddynamicsengine\CommandHandler.class
+com\thatguycy\worlddynamicsengine\WDEnation.class
+com\thatguycy\worlddynamicsengine\HelpCommand.class
+com\thatguycy\worlddynamicsengine\TestNationCommand.class
