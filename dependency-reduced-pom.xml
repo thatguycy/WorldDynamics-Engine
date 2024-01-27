@@ -40,6 +40,10 @@
               <pattern>org.bstats</pattern>
               <shadedPattern>com.thatguycy.worlddynamicsengine</shadedPattern>
             </relocation>
+            <relocation>
+              <pattern>dev.dejvokep.boostedyaml</pattern>
+              <shadedPattern>com.thatguycy.worlddynamicsengine</shadedPattern>
+            </relocation>
           </relocations>
         </configuration>
       </plugin>
