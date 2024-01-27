@@ -18,8 +18,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 public class WorldDynamicsEngine extends JavaPlugin {
+    private static WorldDynamicsEngine instance;
     private CommandHandler commandHandler;
     private Economy economy;
     private NationManager nationManager;
@@ -28,6 +30,7 @@ public class WorldDynamicsEngine extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        instance = this;
         ConfigurationSerialization.registerClass(WDEnation.class);
         commandHandler = new CommandHandler(this);
         nationManager = new NationManager(this);
@@ -73,6 +76,9 @@ public class WorldDynamicsEngine extends JavaPlugin {
         nationManager.enableAutoSave();
     }
 
+    public static WorldDynamicsEngine getInstance() {
+        return instance;
+    }
     private void getConfigSettings() {
         framework = getConfig().getString("framework");
     }

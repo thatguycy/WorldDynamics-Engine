@@ -70,6 +70,13 @@ public class NationManager {
         }
     }
 
+    public void updateNation(WDEnation nation) {
+        if (nation != null && nations.containsKey(nation.getNationName())) {
+            nations.put(nation.getNationName(), nation);
+            saveNations();
+        }
+    }
+
     public void syncWithTowny() {
         // Get Towny nations
         List<String> townyNations = TownyUniverse.getInstance().getNations().stream()
@@ -99,6 +106,7 @@ public class NationManager {
     public WDEnation getNation(String name) {
         return nations.get(name);
     }
+
 
     public void enableAutoSave() {
         plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this::saveNations, 12000L, 12000L); // Every 10 minutes

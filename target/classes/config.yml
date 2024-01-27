@@ -1,4 +1,10 @@
-config-version: 1
+# Don't touch this unless you know what you're doing!
+config-version: 2
 
-# Currently only towny is available
+# Currently only towny is available!
 framework: towny
+
+# Read the Documentation for More Information about these!
+validGovernmentTypes:
+  - DEMOCRACY
+  - DICTATORSHIP

@@ -15,6 +15,8 @@ public class WDEnation implements ConfigurationSerializable {
     private String governmentType;
     private String governmentLeader;
     private List<String> governmentMembers;
+    private String armyLeader;
+    private List<String> armyMembers;
     private List<String> tradeAgreements;
     private String diplomaticStatus;
     private String resourceControl;
@@ -31,6 +33,8 @@ public class WDEnation implements ConfigurationSerializable {
         this.governmentType = "None"; // Default value
         this.governmentLeader = "None"; // Default value
         this.governmentMembers = new ArrayList<>(); // Empty list
+        this.armyLeader = "None";
+        this.armyMembers = new ArrayList<>();
     }
 
     public WDEnation(Map<String, Object> map) {
@@ -38,6 +42,8 @@ public class WDEnation implements ConfigurationSerializable {
         this.governmentType = (String) map.get("GovernmentType");
         this.governmentLeader = (String) map.get("GovernmentLeader");
         this.governmentMembers = (List<String>) map.get("GovernmentMembers");
+        this.armyLeader = (String) map.get("ArmyLeader");
+        this.armyMembers = (List<String>) map.get("ArmyMembers");
         // Initialize other properties from the map...
     }
     @NotNull
@@ -47,7 +53,8 @@ public class WDEnation implements ConfigurationSerializable {
         map.put("GovernmentType", governmentType);
         map.put("GovernmentLeader", governmentLeader);
         map.put("GovernmentMembers", governmentMembers);
-        // Add other properties to map...
+        map.put("ArmyLeader", armyLeader);
+        map.put("ArmyMembers", armyMembers);
         return map;
     }
 
@@ -66,4 +73,20 @@ public class WDEnation implements ConfigurationSerializable {
     public List<String> getGovernmentMembers() {
         return this.governmentMembers;
     }
+
+    public String getArmyLeader() {
+        return this.armyLeader;
+    }
+
+    public List<String> getArmyMembers() {
+        return this.armyMembers;
+    }
+
+    public String getNationName() {
+        return this.nationName;
+    }
+    public void setGovernmentType(String govType) {
+        this.governmentType = govType;
+    }
+
 }
