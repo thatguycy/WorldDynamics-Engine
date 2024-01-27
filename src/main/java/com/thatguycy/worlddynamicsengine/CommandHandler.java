@@ -1,5 +1,6 @@
 package com.thatguycy.worlddynamicsengine;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,7 +25,8 @@ public class CommandHandler implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 0) {
-            return false; // No subcommand provided
+            sender.sendMessage(ChatColor.RED + "Unknown Subcommand (Consult the Docs (/wde <docs/help>) for advice)");
+            return true;
         }
 
         CommandExecutor subCommand = subCommandMap.get(args[0].toLowerCase());
@@ -32,7 +34,7 @@ public class CommandHandler implements CommandExecutor {
             return subCommand.onCommand(sender, cmd, label, args);
         }
 
-        sender.sendMessage("Subcommand not found.");
+        sender.sendMessage(ChatColor.RED + "Unknown Subcommand (Consult the Docs (/wde <docs/help>) for advice)");
         return true;
     }
 }
