@@ -73,7 +73,7 @@ public class NationCommand implements CommandExecutor {
         }
 
         // Display nation information in a format similar to Towny's /t and /n
-        sender.sendMessage(ChatColor.GOLD + "------ Nation Info: " + ChatColor.GREEN + nationName + ChatColor.GOLD + " ------");
+        sender.sendMessage(ChatColor.GOLD + "========================[ " + ChatColor.GREEN + nationName + ChatColor.GOLD + " ]========================");
         sender.sendMessage(ChatColor.YELLOW + "Government Type: " + ChatColor.WHITE + nation.getGovernmentType());
         sender.sendMessage(ChatColor.YELLOW + "Government Leader: " + ChatColor.WHITE + nation.getGovernmentLeader());
 
