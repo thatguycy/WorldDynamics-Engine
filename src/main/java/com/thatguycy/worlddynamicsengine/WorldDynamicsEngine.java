@@ -53,12 +53,11 @@ public class WorldDynamicsEngine extends JavaPlugin {
 
         new BukkitRunnable() {
             public void run() {
-                String latestVersion = fetchLatestVersion();
                 getLogger().info("=================== WorldDynamics Engine ===================");
                 getLogger().info("Author: thatguycy");
                 getLogger().info("Contributor(s): 1ByteBit");
                 getLogger().info("Version: 0.2.0");
-                getLogger().info("Latest Version: " + latestVersion);
+                getLogger().info("Latest Version: " + fetchLatestVersion());
                 getLogger().info("Crafting Complex Worlds, Shaping Geopolitical Adventures.");
                 getLogger().info("============================================================");
             }
@@ -93,10 +92,6 @@ public class WorldDynamicsEngine extends JavaPlugin {
     }
 
     private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
-        }
-
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             return false;
@@ -128,11 +123,13 @@ public class WorldDynamicsEngine extends JavaPlugin {
     }
     @Override
     public void onDisable() {
-        try {
-            config.save();
-            nationManager.syncWithTowny();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (checkDependencies()) {
+            try {
+                config.save();
+                nationManager.syncWithTowny();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
