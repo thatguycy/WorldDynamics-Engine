@@ -54,4 +54,16 @@ public class WDEnation implements ConfigurationSerializable {
     public static WDEnation deserialize(Map<String, Object> map) {
         return new WDEnation(map);
     }
+
+    public String getGovernmentType() {
+        return this.governmentType;
+    }
+
+    public String getGovernmentLeader() {
+        return this.governmentLeader;
+    }
+
+    public List<String> getGovernmentMembers() {
+        return this.governmentMembers;
+    }
 }

@@ -1,12 +1,15 @@
 package com.thatguycy.worlddynamicsengine;
 
+import com.palmergames.bukkit.towny.TownyUniverse;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class NationManager {
     private final JavaPlugin plugin;
@@ -67,6 +70,27 @@ public class NationManager {
         }
     }
 
+    public void syncWithTowny() {
+        // Get Towny nations
+        List<String> townyNations = TownyUniverse.getInstance().getNations().stream()
+                .map(nation -> nation.getName())
+                .collect(Collectors.toList());
+
+        // Sync Towny nations with your plugin's nations
+        for (String townyNationName : townyNations) {
+            if (!nations.containsKey(townyNationName)) {
+                // Add new nation from Towny to your plugin
+                nations.put(townyNationName, new WDEnation(townyNationName));
+            }
+        }
+
+        // Remove nations that are no longer in Towny
+        nations.keySet().removeIf(nationName -> !townyNations.contains(nationName));
+
+        // Save changes to the .yaml file
+        saveNations();
+    }
+
     public void addNation(String name, WDEnation nation) {
         nations.put(name, nation);
         saveNations(); // Save immediately or you can implement a scheduled autosave
@@ -78,5 +102,6 @@ public class NationManager {
 
     public void enableAutoSave() {
         plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this::saveNations, 12000L, 12000L); // Every 10 minutes
+        plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this::syncWithTowny, 6000L, 6000L); // Every 5 minutes
     }
 }

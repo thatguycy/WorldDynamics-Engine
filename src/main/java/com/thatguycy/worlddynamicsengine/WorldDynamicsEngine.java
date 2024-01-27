@@ -64,8 +64,12 @@ public class WorldDynamicsEngine extends JavaPlugin {
         // Commands
         commandHandler.registerSubCommand("help", new HelpCommand());
         commandHandler.registerSubCommand("docs", new DocCommand());
+        commandHandler.registerSubCommand("nation", new NationCommand(nationManager));
+
+        this.getCommand("wde").setTabCompleter(new MyTabCompleter());
 
         // Misc
+        nationManager.syncWithTowny();
         nationManager.enableAutoSave();
     }
 
@@ -120,6 +124,7 @@ public class WorldDynamicsEngine extends JavaPlugin {
     public void onDisable() {
         try {
             config.save();
+            nationManager.syncWithTowny();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

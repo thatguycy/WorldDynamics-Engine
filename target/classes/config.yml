@@ -1,5 +1,4 @@
-config-version: 1.0
+config-version: 1
 
-framework:
-  TownyAdvanced: true
-  Independent: false # Currently Not Available
+# Currently only towny is available
+framework: towny
