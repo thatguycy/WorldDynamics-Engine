@@ -15,7 +15,7 @@ public class WDEnation implements ConfigurationSerializable {
     private String governmentType;
     private String governmentLeader;
     private List<String> governmentMembers;
-    private String armyLeader;
+    private String armyCommander;
     private List<String> armyMembers;
     private List<String> tradeAgreements;
     private String diplomaticStatus;
@@ -33,7 +33,7 @@ public class WDEnation implements ConfigurationSerializable {
         this.governmentType = "None"; // Default value
         this.governmentLeader = "None"; // Default value
         this.governmentMembers = new ArrayList<>(); // Empty list
-        this.armyLeader = "None";
+        this.armyCommander = "None";
         this.armyMembers = new ArrayList<>();
     }
 
@@ -42,7 +42,7 @@ public class WDEnation implements ConfigurationSerializable {
         this.governmentType = (String) map.get("GovernmentType");
         this.governmentLeader = (String) map.get("GovernmentLeader");
         this.governmentMembers = (List<String>) map.get("GovernmentMembers");
-        this.armyLeader = (String) map.get("ArmyLeader");
+        this.armyCommander = (String) map.get("ArmyCommander");
         this.armyMembers = (List<String>) map.get("ArmyMembers");
         // Initialize other properties from the map...
     }
@@ -53,7 +53,7 @@ public class WDEnation implements ConfigurationSerializable {
         map.put("GovernmentType", governmentType);
         map.put("GovernmentLeader", governmentLeader);
         map.put("GovernmentMembers", governmentMembers);
-        map.put("ArmyLeader", armyLeader);
+        map.put("ArmyCommander", armyCommander);
         map.put("ArmyMembers", armyMembers);
         return map;
     }
@@ -75,7 +75,7 @@ public class WDEnation implements ConfigurationSerializable {
     }
 
     public String getArmyLeader() {
-        return this.armyLeader;
+        return this.armyCommander;
     }
 
     public List<String> getArmyMembers() {
@@ -89,4 +89,23 @@ public class WDEnation implements ConfigurationSerializable {
         this.governmentType = govType;
     }
 
+    public void setGovernmentLeader(String governmentLeader) {
+        this.governmentLeader = governmentLeader;
+    }
+
+    public void setGovernmentMembers(List<String> governmentMembers) {
+        this.governmentMembers = governmentMembers;
+    }
+
+    public String getArmyCommander() {
+        return armyCommander;
+    }
+
+    public void setArmyCommander(String armyCommander) {
+        this.armyCommander = armyCommander;
+    }
+
+    public void setArmyMembers(List<String> armyMembers) {
+        this.armyMembers = armyMembers;
+    }
 }

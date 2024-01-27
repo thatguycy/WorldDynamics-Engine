@@ -43,7 +43,19 @@ public class NationCommand implements CommandExecutor {
             switch (args[2].toLowerCase()) {
                 case "setgovtype":
                     return handleSetGovType(sender, nation, args, WorldDynamicsEngine.getInstance());
-                // Add more cases for other subcommands
+                case "setgovleader":
+                    return handleSetGovLeader(sender, nation, args, WorldDynamicsEngine.getInstance());
+                case "addgovmember":
+                    return handleAddGovMember(sender, nation, args, WorldDynamicsEngine.getInstance());
+                case "kickgovmember":
+                    return handleKickGovMember(sender, nation, args, WorldDynamicsEngine.getInstance());
+                case "appointarmycommander":
+                    return handleAppointArmyCommander(sender, nation, args, WorldDynamicsEngine.getInstance());
+                case "enlistarmymember":
+                    return handleEnlistArmyMember(sender, nation, args, WorldDynamicsEngine.getInstance());
+                case "dischargearmymember":
+                    return handleDischargeArmyMember(sender, nation, args, WorldDynamicsEngine.getInstance());
+                    // Add more cases for other subcommands
                 default:
                     sender.sendMessage(ChatColor.RED + "Unknown subcommand.");
                     return true;
@@ -68,6 +80,12 @@ public class NationCommand implements CommandExecutor {
         // Formatting the list of government members
         String membersList = String.join(", ", nation.getGovernmentMembers());
         sender.sendMessage(ChatColor.YELLOW + "Government Members: " + ChatColor.WHITE + (membersList.isEmpty() ? "None" : membersList));
+
+        sender.sendMessage(ChatColor.YELLOW + "Army Commander: " + ChatColor.WHITE + nation.getArmyLeader());
+
+        // Formatting the list of government members
+        String armyMembersList = String.join(", ", nation.getArmyMembers());
+        sender.sendMessage(ChatColor.YELLOW + "Army Members: " + ChatColor.WHITE + (armyMembersList.isEmpty() ? "None" : armyMembersList));
 
         return true;
     }
@@ -114,4 +132,150 @@ public class NationCommand implements CommandExecutor {
 
         return true;
     }
+
+    private boolean handleSetGovLeader(CommandSender sender, WDEnation nation, String[] args, JavaPlugin plugin) {
+        if (nation == null || args.length < 4) {
+            sender.sendMessage(ChatColor.RED + "Usage: /wde nation <nationname> setgovleader <playerName>");
+            return true;
+        }
+
+        // Check if the sender is the Towny Nation King
+        Resident resident = TownyUniverse.getInstance().getResident(sender.getName());
+        Nation townyNation = TownyUniverse.getInstance().getNation(nation.getNationName());
+        if (townyNation == null || resident == null || !resident.equals(townyNation.getKing())) {
+            sender.sendMessage(ChatColor.RED + "You must be the king of the nation to perform this action.");
+            return true;
+        }
+
+        String newLeaderName = args[3];
+        // Additional checks if needed and then set the government leader
+        nation.setGovernmentLeader(newLeaderName);
+        sender.sendMessage(ChatColor.GREEN + "Government leader set to " + newLeaderName + " for " + nation.getNationName());
+
+        nationManager.saveNations();
+        return true;
+    }
+
+    private boolean handleAddGovMember(CommandSender sender, WDEnation nation, String[] args, JavaPlugin plugin) {
+        if (nation == null || args.length < 4) {
+            sender.sendMessage(ChatColor.RED + "Usage: /wde nation <nationname> addgovmember <playerName>");
+            return true;
+        }
+
+        if (!sender.getName().equalsIgnoreCase(nation.getGovernmentLeader())) {
+            sender.sendMessage(ChatColor.RED + "You must be the government leader to perform this action.");
+            return true;
+        }
+
+        String memberName = args[3];
+        List<String> members = nation.getGovernmentMembers();
+        if (!members.contains(memberName)) {
+            members.add(memberName);
+            nation.setGovernmentMembers(members);
+            sender.sendMessage(ChatColor.GREEN + "Member " + memberName + " added to government.");
+        } else {
+            sender.sendMessage(ChatColor.RED + "Member is already in the government.");
+        }
+
+        nationManager.saveNations();
+        return true;
+    }
+
+
+    private boolean handleKickGovMember(CommandSender sender, WDEnation nation, String[] args, JavaPlugin plugin) {
+        if (nation == null || args.length < 4) {
+            sender.sendMessage(ChatColor.RED + "Usage: /wde nation <nationname> kickgovmember <playerName>");
+            return true;
+        }
+
+        if (!sender.getName().equalsIgnoreCase(nation.getGovernmentLeader())) {
+            sender.sendMessage(ChatColor.RED + "You must be the government leader to perform this action.");
+            return true;
+        }
+
+        String memberName = args[3];
+        List<String> members = nation.getGovernmentMembers();
+        if (members.contains(memberName)) {
+            members.remove(memberName);
+            nation.setGovernmentMembers(members);
+            sender.sendMessage(ChatColor.GREEN + "Member " + memberName + " removed from government.");
+        } else {
+            sender.sendMessage(ChatColor.RED + "Member is not in the government.");
+        }
+
+        nationManager.saveNations();
+        return true;
+    }
+
+
+    private boolean handleAppointArmyCommander(CommandSender sender, WDEnation nation, String[] args, JavaPlugin plugin) {
+        if (nation == null || args.length < 4) {
+            sender.sendMessage(ChatColor.RED + "Usage: /wde nation <nationname> appointarmycommander <playerName>");
+            return true;
+        }
+
+        if (!sender.getName().equalsIgnoreCase(nation.getGovernmentLeader())) {
+            sender.sendMessage(ChatColor.RED + "You must be the government leader to perform this action.");
+            return true;
+        }
+
+        String commanderName = args[3];
+        nation.setArmyCommander(commanderName);
+        sender.sendMessage(ChatColor.GREEN + "Army commander appointed: " + commanderName);
+
+        nationManager.saveNations();
+        return true;
+    }
+
+    private boolean handleEnlistArmyMember(CommandSender sender, WDEnation nation, String[] args, JavaPlugin plugin) {
+        if (nation == null || args.length < 4) {
+            sender.sendMessage(ChatColor.RED + "Usage: /wde nation <nationname> enlistarmymember <playerName>");
+            return true;
+        }
+
+        if (!sender.getName().equalsIgnoreCase(nation.getArmyCommander())) {
+            sender.sendMessage(ChatColor.RED + "You must be the army commander to perform this action.");
+            return true;
+        }
+
+        String memberName = args[3];
+        List<String> armyMembers = nation.getArmyMembers();
+        if (!armyMembers.contains(memberName)) {
+            armyMembers.add(memberName);
+            nation.setArmyMembers(armyMembers);
+            sender.sendMessage(ChatColor.GREEN + "Member " + memberName + " enlisted in the army.");
+        } else {
+            sender.sendMessage(ChatColor.RED + "Member is already enlisted in the army.");
+        }
+
+        nationManager.saveNations();
+        return true;
+    }
+
+
+    private boolean handleDischargeArmyMember(CommandSender sender, WDEnation nation, String[] args, JavaPlugin plugin) {
+        if (nation == null || args.length < 4) {
+            sender.sendMessage(ChatColor.RED + "Usage: /wde nation <nationname> dischargearmymember <playerName>");
+            return true;
+        }
+
+        if (!sender.getName().equalsIgnoreCase(nation.getArmyCommander())) {
+            sender.sendMessage(ChatColor.RED + "You must be the army commander to perform this action.");
+            return true;
+        }
+
+        String memberName = args[3];
+        List<String> armyMembers = nation.getArmyMembers();
+        if (armyMembers.contains(memberName)) {
+            armyMembers.remove(memberName);
+            nation.setArmyMembers(armyMembers);
+            sender.sendMessage(ChatColor.GREEN + "Member " + memberName + " discharged from the army.");
+        } else {
+            sender.sendMessage(ChatColor.RED + "Member is not enlisted in the army.");
+        }
+
+        nationManager.saveNations();
+        return true;
+    }
+
 }
