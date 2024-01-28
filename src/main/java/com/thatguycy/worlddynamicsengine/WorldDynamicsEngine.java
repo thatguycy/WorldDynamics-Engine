@@ -67,6 +67,7 @@ public class WorldDynamicsEngine extends JavaPlugin {
         commandHandler.registerSubCommand("help", new HelpCommand());
         commandHandler.registerSubCommand("docs", new DocCommand());
         commandHandler.registerSubCommand("nation", new NationCommand(nationManager));
+        commandHandler.registerSubCommand("diplomacy", new DiplomacyCommand(nationManager));
 
         this.getCommand("wde").setTabCompleter(new MyTabCompleter());
 

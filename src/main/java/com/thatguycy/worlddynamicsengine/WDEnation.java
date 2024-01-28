@@ -17,7 +17,8 @@ public class WDEnation implements ConfigurationSerializable {
     private List<String> governmentMembers;
     private String armyCommander;
     private List<String> armyMembers;
-    private List<String> tradeAgreements;
+    private Map<String, String> diplomaticRelations;
+    private Map<String, Boolean> tradingStatus;
     private String diplomaticStatus;
     private String resourceControl;
     private String economicPolicies;
@@ -35,28 +36,37 @@ public class WDEnation implements ConfigurationSerializable {
         this.governmentMembers = new ArrayList<>(); // Empty list
         this.armyCommander = "None";
         this.armyMembers = new ArrayList<>();
+        this.diplomaticRelations = new HashMap<>(); // Initialize with an empty map
+        this.tradingStatus = new HashMap<>(); // Initialize with an empty map
     }
 
     public WDEnation(Map<String, Object> map) {
-        this.nationName = (String) map.get("nationName"); // Make sure to store the nation name in the map
+        this.nationName = (String) map.get("nationName");
         this.governmentType = (String) map.get("GovernmentType");
         this.governmentLeader = (String) map.get("GovernmentLeader");
         this.governmentMembers = (List<String>) map.get("GovernmentMembers");
         this.armyCommander = (String) map.get("ArmyCommander");
         this.armyMembers = (List<String>) map.get("ArmyMembers");
-        // Initialize other properties from the map...
+        this.diplomaticRelations = (Map<String, String>) map.get("DiplomaticRelations");
+        this.tradingStatus = (Map<String, Boolean>) map.get("TradingStatus");
     }
+
     @NotNull
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
+        map.put("nationName", nationName);
         map.put("GovernmentType", governmentType);
         map.put("GovernmentLeader", governmentLeader);
         map.put("GovernmentMembers", governmentMembers);
         map.put("ArmyCommander", armyCommander);
         map.put("ArmyMembers", armyMembers);
+        map.put("DiplomaticRelations", diplomaticRelations);
+        map.put("TradingStatus", tradingStatus);
         return map;
     }
+
+
 
     public static WDEnation deserialize(Map<String, Object> map) {
         return new WDEnation(map);
@@ -107,5 +117,31 @@ public class WDEnation implements ConfigurationSerializable {
 
     public void setArmyMembers(List<String> armyMembers) {
         this.armyMembers = armyMembers;
+    }
+
+    // Getter for diplomatic relations
+    public Map<String, String> getDiplomaticRelations() {
+        return this.diplomaticRelations;
+    }
+
+    // Setter for a single diplomatic relation
+    public void setDiplomaticRelation(String nationName, String relationStatus) {
+        if (this.diplomaticRelations == null) {
+            this.diplomaticRelations = new HashMap<>();
+        }
+        this.diplomaticRelations.put(nationName, relationStatus);
+    }
+
+    // Getter for trading status
+    public Map<String, Boolean> getTradingStatus() {
+        return this.tradingStatus;
+    }
+
+    // Setter for a single trading status
+    public void setTradingStatus(String nationName, boolean status) {
+        if (this.tradingStatus == null) {
+            this.tradingStatus = new HashMap<>();
+        }
+        this.tradingStatus.put(nationName, status);
     }
 }

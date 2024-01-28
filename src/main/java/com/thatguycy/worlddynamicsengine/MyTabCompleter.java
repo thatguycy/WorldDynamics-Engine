@@ -26,15 +26,16 @@ public class MyTabCompleter implements TabCompleter {
                 completions.add("help");
                 completions.add("docs");
                 completions.add("nation");
+                completions.add("diplomacy");
                 // Add more first-level options as needed
             }
             else if (args.length == 2 && args[0].equalsIgnoreCase("nation")) {
                 TownyUniverse.getInstance().getNations().forEach(nation -> completions.add(nation.getName()));
             }
-            else if (args.length == 3 && args[0].equalsIgnoreCase("nation")) {
+            else if (args[0].equalsIgnoreCase("nation") && args.length == 3) {
                 completions.addAll(Arrays.asList("setgovtype", "setgovleader", "addgovmember", "kickgovmember", "appointarmycommander", "enlistarmymember", "dischargearmymember"));
             }
-            else if (args.length == 4 && args[0].equalsIgnoreCase("nation")) {
+            else if (args[0].equalsIgnoreCase("nation") && args.length == 4) {
                 switch (args[2].toLowerCase()) {
                     case "setgovtype":
                         completions.addAll(WorldDynamicsEngine.getInstance().getConfig().getStringList("validGovernmentTypes"));
@@ -49,10 +50,27 @@ public class MyTabCompleter implements TabCompleter {
                         break;
                 }
             }
+            else if (args[0].equalsIgnoreCase("diplomacy") && args.length == 2) {
+                completions.addAll(Arrays.asList("setrelation", "trading", "viewtrading", "relations"));
+            }
+            else if (args[0].equalsIgnoreCase("diplomacy") && args.length == 3) {
+                if (args[1].equalsIgnoreCase("setrelation") || args[1].equalsIgnoreCase("trading") || args[1].equalsIgnoreCase("viewtrading") || args[1].equalsIgnoreCase("relations")) {
+                    // Suggest nation names for setting relations or trading status
+                    TownyUniverse.getInstance().getNations().forEach(nation -> completions.add(nation.getName()));
+                }
+            }
+            else if (args[0].equalsIgnoreCase("diplomacy") && args.length == 4) {
+                if (args[1].equalsIgnoreCase("setrelation")) {
+                    // Suggest friendly/neutral/unfriendly
+                    completions.addAll(Arrays.asList("friendly", "neutral", "unfriendly"));
+                } else if (args[1].equalsIgnoreCase("trading")) {
+                    // Suggest enabled/disabled
+                    completions.addAll(Arrays.asList("enabled", "disabled"));
+                }
+            }
             // Handle other specific subcommands and arguments...
         }
 
         return completions;
     }
-
 }
