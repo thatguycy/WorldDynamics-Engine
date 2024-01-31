@@ -5,7 +5,9 @@ import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,11 +19,14 @@ import java.util.List;
 import java.util.Map;
 
 public class DiplomacyCommand implements CommandExecutor {
-
     private NationManager nationManager;
+    private ResidentManager residentManager;
+    private Economy economy;
 
-    public DiplomacyCommand(NationManager nationManager) {
+    public DiplomacyCommand(NationManager nationManager, ResidentManager residentManager, Economy economy) {
         this.nationManager = nationManager;
+        this.residentManager = residentManager;
+        this.economy = economy;
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -55,7 +60,6 @@ public class DiplomacyCommand implements CommandExecutor {
                         }
                         // Pass the target nation's name as the second argument
                         return handleSetRelation(sender, args[2], args, WorldDynamicsEngine.getInstance());
-
                     case "trading":
                         if (args.length < 4) {
                             sender.sendMessage(ChatColor.RED + "Usage: /wde diplomacy trading <nationName> <enabled/disabled>");
@@ -63,7 +67,19 @@ public class DiplomacyCommand implements CommandExecutor {
                         }
                         // Pass the target nation's name as the second argument
                         return handleSetTrading(sender, args[2], args, WorldDynamicsEngine.getInstance());
-
+                    case "visit":
+                        System.out.println("Args length: " + args.length + ", Args: " + Arrays.toString(args));
+                        if (args.length < 3) {
+                            sender.sendMessage(ChatColor.RED + "Usage: /wde diplomacy visit <nation>");
+                            return true;
+                        }
+                        String destinationNationName = args[2];
+                        try {
+                            return handleVisit(sender, destinationNationName, nationManager, residentManager, economy);
+                        } catch (NotRegisteredException e) {
+                            sender.sendMessage(ChatColor.RED + "An error occurred: " + e.getMessage());
+                            return true;
+                        }
                     default:
                         sender.sendMessage(ChatColor.RED + "Unknown subcommand.");
                         return true;
@@ -71,7 +87,6 @@ public class DiplomacyCommand implements CommandExecutor {
             }
             // Handle other commands...
         }
-
         // If the command is not recognized
         sender.sendMessage(ChatColor.RED + "Unknown command.");
         return true;
@@ -236,6 +251,104 @@ public class DiplomacyCommand implements CommandExecutor {
 
         return true;
     }
+    public VisitResult checkVisit(String diplomatNationName, String destinationNationName, NationManager nationManager) {
+        WDEnation diplomatNation = nationManager.getNation(diplomatNationName);
+        WDEnation destinationNation = nationManager.getNation(destinationNationName);
 
+        // Check if either nation is not found
+        if (diplomatNation == null || destinationNation == null) {
+            return new VisitResult(false, 0); // Visit not allowed, no price
+        }
 
+        String statusToDestination = diplomatNation.getDiplomaticRelations().get(destinationNationName);
+        String statusFromDestination = destinationNation.getDiplomaticRelations().get(diplomatNationName);
+
+        // Check if either nation has set the other as "unfriendly"
+        if ("unfriendly".equalsIgnoreCase(statusToDestination) || "unfriendly".equalsIgnoreCase(statusFromDestination)) {
+            return new VisitResult(false, 0); // Visit not allowed, no price
+        }
+
+        // Calculate price based on diplomatic status
+        int price = 1000; // Default price for Friendly/Neutral/None
+        if ("friendly".equalsIgnoreCase(statusToDestination) && "friendly".equalsIgnoreCase(statusFromDestination)) {
+            price = 750; // Reduced price for mutual friendly status
+        } else if (Boolean.TRUE.equals(diplomatNation.getTradingStatus().get(destinationNationName))
+                && Boolean.TRUE.equals(destinationNation.getTradingStatus().get(diplomatNationName))) {
+            price = 0; // Free for mutual trade status
+        }
+
+        return new VisitResult(true, price); // Visit allowed with calculated price
+    }
+
+    // Helper class to return visit result with allowance and price
+    public static class VisitResult {
+        private final boolean allowed;
+        private final int price;
+
+        public VisitResult(boolean allowed, int price) {
+            this.allowed = allowed;
+            this.price = price;
+        }
+
+        public boolean isAllowed() {
+            return allowed;
+        }
+
+        public int getPrice() {
+            return price;
+        }
+    }
+
+    public boolean handleVisit(CommandSender sender, String destinationNationName, NationManager nationManager, ResidentManager residentManager, Economy economy) throws NotRegisteredException {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "This command can only be used by players.");
+            return true;
+        }
+
+        Player player = (Player) sender;
+        Resident townyResident;
+        try {
+            townyResident = TownyUniverse.getInstance().getResident(player.getUniqueId());
+            if (townyResident == null || !townyResident.hasTown() || !townyResident.getTown().hasNation()) {
+                player.sendMessage(ChatColor.RED + "You must be part of a nation to use this command.");
+                return true;
+            }
+        } catch (NotRegisteredException e) {
+            player.sendMessage(ChatColor.RED + "Error finding your Towny data.");
+            return true;
+        }
+
+        String playerNationName = townyResident.getTown().getNation().getName();
+        WDEnation destinationNation = nationManager.getNation(destinationNationName);
+        if (destinationNation == null) {
+            player.sendMessage(ChatColor.RED + "Destination nation not found.");
+            return true;
+        }
+
+        Location capitalSpawnLocation = nationManager.getCapitalSpawnLocation(destinationNation);
+        if (capitalSpawnLocation == null) {
+            player.sendMessage(ChatColor.RED + "Capital town's spawn location not found.");
+            return true;
+        }
+
+        // Check visit cost and if player can afford it
+        VisitResult visitResult = checkVisit(playerNationName, destinationNationName, nationManager);
+        double cost = visitResult.getPrice();
+        if (!visitResult.isAllowed()) {
+            player.sendMessage(ChatColor.RED + "You are not permitted to visit this nation.");
+            return true;
+        }
+        if (!economy.has(player, cost)) {
+            player.sendMessage(ChatColor.RED + "You do not have enough money to visit. Cost: $" + cost);
+            return true;
+        }
+
+        // Deduct the cost from the player's balance
+        economy.withdrawPlayer(player, cost);
+        player.sendMessage(ChatColor.GREEN + "Teleported to the capital of " + destinationNationName + ". Cost: $" + cost);
+
+        // Teleport the player
+        player.teleport(capitalSpawnLocation);
+        return true;
+    }
 }

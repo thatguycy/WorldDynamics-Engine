@@ -3,23 +3,28 @@ package com.thatguycy.worlddynamicsengine;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
 import com.thatguycy.worlddynamicsengine.WDEnation;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class NationCommand implements CommandExecutor {
 
     private NationManager nationManager;
+    private ResidentManager residentManager;
 
-    public NationCommand(NationManager nationManager) {
+    public NationCommand(NationManager nationManager, ResidentManager residentManager) {
         this.nationManager = nationManager;
+        this.residentManager = residentManager;
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -55,7 +60,27 @@ public class NationCommand implements CommandExecutor {
                     return handleEnlistArmyMember(sender, nation, args, WorldDynamicsEngine.getInstance());
                 case "dischargearmymember":
                     return handleDischargeArmyMember(sender, nation, args, WorldDynamicsEngine.getInstance());
-                    // Add more cases for other subcommands
+                case "adddiplomat":
+                    if (args.length < 4) {
+                        sender.sendMessage(ChatColor.RED + "Usage: /wde nation adddiplomat <username>");
+                        return true;
+                    }
+                    if (!hasNationAuthority(sender, nationManager)) {
+                        sender.sendMessage(ChatColor.RED + "You do not have the authority to perform this action.");
+                        return true;
+                    }
+                    return handleAddDiplomat(sender, args[3], residentManager);
+
+                case "removediplomat":
+                    if (args.length < 4) {
+                        sender.sendMessage(ChatColor.RED + "Usage: /wde nation removediplomat <username>");
+                        return true;
+                    }
+                    if (!hasNationAuthority(sender, nationManager)) {
+                        sender.sendMessage(ChatColor.RED + "You do not have the authority to perform this action.");
+                        return true;
+                    }
+                    return handleRemoveDiplomat(sender, args[3], residentManager);
                 default:
                     sender.sendMessage(ChatColor.RED + "Unknown subcommand.");
                     return true;
@@ -277,5 +302,84 @@ public class NationCommand implements CommandExecutor {
         nationManager.saveNations();
         return true;
     }
+
+    private boolean handleAddDiplomat(CommandSender sender, String username, ResidentManager residentManager) {
+        Player targetPlayer = WorldDynamicsEngine.getInstance().getServer().getPlayer(username);
+        if (targetPlayer == null) {
+            sender.sendMessage(ChatColor.RED + "Player not found.");
+            return true;
+        }
+
+        UUID uuid = targetPlayer.getUniqueId();
+        WDEresident resident = residentManager.getResident(uuid);
+        if (resident == null) {
+            resident = new WDEresident(uuid, username); // Create a new resident if not found
+            residentManager.addResident(resident);
+        }
+
+        resident.addFlag("diplomat");
+        residentManager.saveResidents(); // Save changes
+        sender.sendMessage(ChatColor.GREEN + "Diplomat status added to " + username);
+        return true;
+    }
+
+
+    private boolean handleRemoveDiplomat(CommandSender sender, String username, ResidentManager residentManager) {
+        Player targetPlayer = WorldDynamicsEngine.getInstance().getServer().getPlayer(username);
+        if (targetPlayer == null) {
+            sender.sendMessage(ChatColor.RED + "Player not found.");
+            return true;
+        }
+
+        UUID uuid = targetPlayer.getUniqueId();
+        WDEresident resident = residentManager.getResident(uuid);
+        if (resident == null) {
+            sender.sendMessage(ChatColor.RED + "Resident data not found for " + username);
+            return true;
+        }
+
+        resident.removeFlag("diplomat");
+        residentManager.saveResidents(); // Save changes
+        sender.sendMessage(ChatColor.GREEN + "Diplomat status removed from " + username);
+        return true;
+    }
+
+    private boolean hasNationAuthority(CommandSender sender, NationManager nationManager) {
+        if (!(sender instanceof Player)) {
+            return false;
+        }
+
+        Player player = (Player) sender;
+        try {
+            Resident resident = TownyUniverse.getInstance().getResident(player.getName());
+            if (resident == null || !resident.hasTown()) {
+                return false;
+            }
+
+            Town town = resident.getTown();
+            if (town.hasNation()) {
+                Nation nation = town.getNation();
+                WDEnation wdeNation = nationManager.getNation(nation.getName());
+
+                // Check if player is the Nation Leader in Towny
+                if (nation.isKing(resident)) {
+                    return true;
+                }
+
+                // Check if player is the Government Leader or Army Leader in WDEnation
+                String playerName = player.getName();
+                if (wdeNation != null) {
+                    if (wdeNation.getGovernmentLeader().equalsIgnoreCase(playerName) ||
+                            wdeNation.getArmyLeader().equalsIgnoreCase(playerName)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
 }

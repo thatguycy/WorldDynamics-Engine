@@ -1,6 +1,9 @@
 package com.thatguycy.worlddynamicsengine;
 
 import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.exceptions.TownyException;
+import com.palmergames.bukkit.towny.object.Town;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -107,6 +110,32 @@ public class NationManager {
         return nations.get(name);
     }
 
+    public Location getCapitalSpawnLocation(WDEnation destinationNation) {
+        try {
+            TownyUniverse townyUniverse = TownyUniverse.getInstance();
+            com.palmergames.bukkit.towny.object.Nation townyNation = townyUniverse.getNation(destinationNation.getNationName());
+
+            if (townyNation != null) {
+                Town capitalTown = townyNation.getCapital();
+                if (capitalTown.hasSpawn()) {
+                    return capitalTown.getSpawn();
+                } else {
+                    // Capital town does not have a spawn location set
+                    System.out.println("The capital town of " + destinationNation.getNationName() + " does not have a spawn location set.");
+                }
+            } else {
+                // Towny nation not found
+                System.out.println("Nation not found in Towny: " + destinationNation.getNationName());
+            }
+        } catch (TownyException e) {
+            // Handle Towny-specific exceptions, such as no town spawn
+            System.out.println("Error getting capital spawn location for " + destinationNation.getNationName() + ": " + e.getMessage());
+        } catch (Exception e) {
+            // Handle any other exceptions
+            System.out.println("Unexpected error while getting capital spawn location: " + e.getMessage());
+        }
+        return null;
+    }
 
     public void enableAutoSave() {
         plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this::saveNations, 12000L, 12000L); // Every 10 minutes

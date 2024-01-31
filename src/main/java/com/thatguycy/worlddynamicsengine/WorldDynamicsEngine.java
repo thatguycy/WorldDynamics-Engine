@@ -25,6 +25,8 @@ public class WorldDynamicsEngine extends JavaPlugin {
     private CommandHandler commandHandler;
     private Economy economy;
     private NationManager nationManager;
+    private ResidentManager residentManager;
+
     private YamlDocument config;
     private String framework;
 
@@ -32,8 +34,10 @@ public class WorldDynamicsEngine extends JavaPlugin {
     public void onEnable() {
         instance = this;
         ConfigurationSerialization.registerClass(WDEnation.class);
+        ConfigurationSerialization.registerClass(WDEresident.class, "WDEresident");
         commandHandler = new CommandHandler(this);
         nationManager = new NationManager(this);
+        residentManager = new ResidentManager(this);
 
         // Use BoostedYAML for automatic config updating
         try {
@@ -66,14 +70,16 @@ public class WorldDynamicsEngine extends JavaPlugin {
         // Commands
         commandHandler.registerSubCommand("help", new HelpCommand());
         commandHandler.registerSubCommand("docs", new DocCommand());
-        commandHandler.registerSubCommand("nation", new NationCommand(nationManager));
-        commandHandler.registerSubCommand("diplomacy", new DiplomacyCommand(nationManager));
+        commandHandler.registerSubCommand("nation", new NationCommand(nationManager, residentManager));
+        commandHandler.registerSubCommand("diplomacy", new DiplomacyCommand(nationManager, residentManager, economy));
 
         this.getCommand("wde").setTabCompleter(new MyTabCompleter());
 
         // Misc
         nationManager.syncWithTowny();
         nationManager.enableAutoSave();
+        residentManager.syncWithTowny();
+        residentManager.enableAutoSave();
     }
 
     public static WorldDynamicsEngine getInstance() {
@@ -128,6 +134,8 @@ public class WorldDynamicsEngine extends JavaPlugin {
             try {
                 config.save();
                 nationManager.syncWithTowny();
+                residentManager.syncWithTowny();
+                residentManager.saveResidents();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
