@@ -82,7 +82,7 @@ public class NationCommand implements CommandExecutor {
                     }
                     return handleRemoveDiplomat(sender, args[3], residentManager);
                 default:
-                    sender.sendMessage(ChatColor.RED + "Unknown subcommand.");
+                    sender.sendMessage(ChatColor.RED + WorldDynamicsEngine.getInstance().getLocaleMessage(WorldDynamicsEngine.getInstance().userLang, "unknownsub"));
                     return true;
             }
         }

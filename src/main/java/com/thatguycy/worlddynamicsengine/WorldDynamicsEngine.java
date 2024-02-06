@@ -7,6 +7,8 @@ import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,7 +20,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WorldDynamicsEngine extends JavaPlugin {
     private static WorldDynamicsEngine instance;
@@ -26,9 +30,19 @@ public class WorldDynamicsEngine extends JavaPlugin {
     private Economy economy;
     private NationManager nationManager;
     private ResidentManager residentManager;
-
     private YamlDocument config;
-    private String framework;
+    public String framework;
+    public boolean govEnabled;
+    public boolean orgEnabled;
+    public double diplomacyVisitCostNeutralNone;
+    public double diplomacyVisitCostFriendly;
+    public double diplomacyFormCostTrade;
+    public double orgFormationCost;
+    public boolean orgBusinessTownLocked;
+    public int residentOrgLimit;
+    public String userLang;
+    private final Map<String, FileConfiguration> locales = new HashMap<>();
+
 
     @Override
     public void onEnable() {
@@ -39,14 +53,14 @@ public class WorldDynamicsEngine extends JavaPlugin {
         nationManager = new NationManager(this);
         residentManager = new ResidentManager(this);
 
-        // Use BoostedYAML for automatic config updating
-        try {
-            config = YamlDocument.create(new File(getDataFolder(), "config.yml"), getResource("config.yml"),
-                    GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // Get config settings
+        // Load Locales
+
+        saveDefaultLocale("messages_en.yml");
+        loadLocales();
+
+        // Config Stuff
+
+        createConfig();
         getConfigSettings();
 
         if (!checkDependencies()) {
@@ -82,11 +96,36 @@ public class WorldDynamicsEngine extends JavaPlugin {
         residentManager.enableAutoSave();
     }
 
+    private void createConfig() {
+        try {
+            if (!getDataFolder().exists()) {
+                getDataFolder().mkdirs();
+            }
+            File configFile = new File(getDataFolder(), "config.yml");
+            if (!configFile.exists()) {
+                getLogger().info("Config.yml not found, creating!");
+                saveDefaultConfig();
+            } else {
+                getLogger().info("Config.yml found, loading!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public static WorldDynamicsEngine getInstance() {
         return instance;
     }
     private void getConfigSettings() {
         framework = getConfig().getString("framework");
+        govEnabled = getConfig().getBoolean("govEnabled");
+        orgEnabled = getConfig().getBoolean("orgEnabled");
+        diplomacyVisitCostNeutralNone = getConfig().getDouble("diplomacyVisitCostNeutralNone");
+        diplomacyVisitCostFriendly = getConfig().getDouble("diplomacyVisitCostFriendly");
+        diplomacyFormCostTrade = getConfig().getDouble("diplomacyFormCostTrade");
+        orgFormationCost = getConfig().getDouble("orgFormationCost");
+        orgBusinessTownLocked = getConfig().getBoolean("orgBusinessTownLocked");
+        residentOrgLimit = getConfig().getInt("residentOrgLimit");
+        userLang = getConfig().getString("locale");
     }
 
     private boolean checkDependencies() {
@@ -140,5 +179,29 @@ public class WorldDynamicsEngine extends JavaPlugin {
                 throw new RuntimeException(e);
             }
         }
+    }
+    private void saveDefaultLocale(String fileName) {
+        File localeFile = new File(getDataFolder(), fileName);
+        if (!localeFile.exists()) {
+            saveResource(fileName, false);
+        }
+    }
+
+    private void loadLocales() {
+        File folder = getDataFolder();
+        if (folder.listFiles() == null) return;
+        for (File file : folder.listFiles()) {
+            if (file.getName().startsWith("messages_")) {
+                locales.put(file.getName().substring(9, 11), YamlConfiguration.loadConfiguration(file));
+            }
+        }
+    }
+
+    public String getLocaleMessage(String locale, String key) {
+        FileConfiguration config = locales.get(locale);
+        if (config == null) {
+            config = locales.get("en"); // Default to English if the requested locale is not loaded
+        }
+        return config.getString(key, "Message not found"); // Return a default message if the key is not found
     }
 }
