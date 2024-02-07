@@ -27,7 +27,6 @@ public class ResidentManager {
         loadResidents();
     }
 
-
     public void loadResidents() {
         residentFile = new File(plugin.getDataFolder(), "data/residents.yml");
         if (!residentFile.exists()) {

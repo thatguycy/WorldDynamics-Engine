@@ -7,6 +7,7 @@ import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import net.milkbowl.vault.economy.Economy;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -94,6 +95,8 @@ public class WorldDynamicsEngine extends JavaPlugin {
         nationManager.enableAutoSave();
         residentManager.syncWithTowny();
         residentManager.enableAutoSave();
+
+        Metrics metrics = new Metrics(this, 20763); // Bstats
     }
 
     private void createConfig() {

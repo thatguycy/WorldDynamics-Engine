@@ -47,13 +47,33 @@ public class NationCommand implements CommandExecutor {
         else if (args.length > 2) {
             switch (args[2].toLowerCase()) {
                 case "setgovtype":
-                    return handleSetGovType(sender, nation, args, WorldDynamicsEngine.getInstance());
+                    if (!WorldDynamicsEngine.getInstance().govEnabled) {
+                        return handleSetGovType(sender, nation, args, WorldDynamicsEngine.getInstance());
+                    } else {
+                        sender.sendMessage(ChatColor.RED + WorldDynamicsEngine.getInstance().getLocaleMessage(WorldDynamicsEngine.getInstance().userLang, "unknownsub"));
+                        return true;
+                    }
                 case "setgovleader":
-                    return handleSetGovLeader(sender, nation, args, WorldDynamicsEngine.getInstance());
+                    if (!WorldDynamicsEngine.getInstance().govEnabled) {
+                        return handleSetGovLeader(sender, nation, args, WorldDynamicsEngine.getInstance());
+                    } else {
+                        sender.sendMessage(ChatColor.RED + WorldDynamicsEngine.getInstance().getLocaleMessage(WorldDynamicsEngine.getInstance().userLang, "unknownsub"));
+                        return true;
+                    }
                 case "addgovmember":
-                    return handleAddGovMember(sender, nation, args, WorldDynamicsEngine.getInstance());
+                    if (!WorldDynamicsEngine.getInstance().govEnabled) {
+                        return handleAddGovMember(sender, nation, args, WorldDynamicsEngine.getInstance());
+                    } else {
+                        sender.sendMessage(ChatColor.RED + WorldDynamicsEngine.getInstance().getLocaleMessage(WorldDynamicsEngine.getInstance().userLang, "unknownsub"));
+                        return true;
+                    }
                 case "kickgovmember":
-                    return handleKickGovMember(sender, nation, args, WorldDynamicsEngine.getInstance());
+                    if (!WorldDynamicsEngine.getInstance().govEnabled) {
+                        return handleKickGovMember(sender, nation, args, WorldDynamicsEngine.getInstance());
+                    } else {
+                        sender.sendMessage(ChatColor.RED + WorldDynamicsEngine.getInstance().getLocaleMessage(WorldDynamicsEngine.getInstance().userLang, "unknownsub"));
+                        return true;
+                    }
                 case "appointarmycommander":
                     return handleAppointArmyCommander(sender, nation, args, WorldDynamicsEngine.getInstance());
                 case "enlistarmymember":
