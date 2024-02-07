@@ -31,6 +31,7 @@ public class WorldDynamicsEngine extends JavaPlugin {
     private Economy economy;
     private NationManager nationManager;
     private ResidentManager residentManager;
+    private OrgManager orgManager;
     private YamlDocument config;
     public String framework;
     public boolean govEnabled;
@@ -50,10 +51,11 @@ public class WorldDynamicsEngine extends JavaPlugin {
         instance = this;
         ConfigurationSerialization.registerClass(WDEnation.class);
         ConfigurationSerialization.registerClass(WDEresident.class, "WDEresident");
+        ConfigurationSerialization.registerClass(WDEorg.class, "WDEorg");
         commandHandler = new CommandHandler(this);
         nationManager = new NationManager(this);
         residentManager = new ResidentManager(this);
-
+        orgManager = new OrgManager(this);
         // Load Locales
 
         saveDefaultLocale("messages_en.yml");
@@ -95,6 +97,7 @@ public class WorldDynamicsEngine extends JavaPlugin {
         nationManager.enableAutoSave();
         residentManager.syncWithTowny();
         residentManager.enableAutoSave();
+        orgManager.enableAutoSave();
 
         Metrics metrics = new Metrics(this, 20763); // Bstats
     }
@@ -178,6 +181,7 @@ public class WorldDynamicsEngine extends JavaPlugin {
                 nationManager.syncWithTowny();
                 residentManager.syncWithTowny();
                 residentManager.saveResidents();
+                orgManager.saveOrganizations();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
