@@ -1,10 +1,14 @@
 com\thatguycy\worlddynamicsengine\DiplomacyCommand.class
 com\thatguycy\worlddynamicsengine\NationCommand.class
 com\thatguycy\worlddynamicsengine\WDEnation.class
+com\thatguycy\worlddynamicsengine\OrgManager$1.class
 com\thatguycy\worlddynamicsengine\DiplomacyCommand$VisitResult.class
 com\thatguycy\worlddynamicsengine\MyTabCompleter.class
+com\thatguycy\worlddynamicsengine\OrgCommand.class
+com\thatguycy\worlddynamicsengine\OrgManager.class
 com\thatguycy\worlddynamicsengine\ResidentManager$1.class
 com\thatguycy\worlddynamicsengine\WorldDynamicsEngine.class
+com\thatguycy\worlddynamicsengine\WDEorg.class
 com\thatguycy\worlddynamicsengine\ResidentManager.class
 com\thatguycy\worlddynamicsengine\WDEresident.class
 com\thatguycy\worlddynamicsengine\CommandHandler.class

@@ -47,60 +47,84 @@ public class NationCommand implements CommandExecutor {
         else if (args.length > 2) {
             switch (args[2].toLowerCase()) {
                 case "setgovtype":
-                    if (!WorldDynamicsEngine.getInstance().govEnabled) {
+                    if (WorldDynamicsEngine.getInstance().govEnabled) {
                         return handleSetGovType(sender, nation, args, WorldDynamicsEngine.getInstance());
                     } else {
                         sender.sendMessage(ChatColor.RED + WorldDynamicsEngine.getInstance().getLocaleMessage(WorldDynamicsEngine.getInstance().userLang, "unknownsub"));
                         return true;
                     }
                 case "setgovleader":
-                    if (!WorldDynamicsEngine.getInstance().govEnabled) {
+                    if (WorldDynamicsEngine.getInstance().govEnabled) {
                         return handleSetGovLeader(sender, nation, args, WorldDynamicsEngine.getInstance());
                     } else {
                         sender.sendMessage(ChatColor.RED + WorldDynamicsEngine.getInstance().getLocaleMessage(WorldDynamicsEngine.getInstance().userLang, "unknownsub"));
                         return true;
                     }
                 case "addgovmember":
-                    if (!WorldDynamicsEngine.getInstance().govEnabled) {
+                    if (WorldDynamicsEngine.getInstance().govEnabled) {
                         return handleAddGovMember(sender, nation, args, WorldDynamicsEngine.getInstance());
                     } else {
                         sender.sendMessage(ChatColor.RED + WorldDynamicsEngine.getInstance().getLocaleMessage(WorldDynamicsEngine.getInstance().userLang, "unknownsub"));
                         return true;
                     }
                 case "kickgovmember":
-                    if (!WorldDynamicsEngine.getInstance().govEnabled) {
+                    if (WorldDynamicsEngine.getInstance().govEnabled) {
                         return handleKickGovMember(sender, nation, args, WorldDynamicsEngine.getInstance());
                     } else {
                         sender.sendMessage(ChatColor.RED + WorldDynamicsEngine.getInstance().getLocaleMessage(WorldDynamicsEngine.getInstance().userLang, "unknownsub"));
                         return true;
                     }
                 case "appointarmycommander":
-                    return handleAppointArmyCommander(sender, nation, args, WorldDynamicsEngine.getInstance());
+                    if (WorldDynamicsEngine.getInstance().armyEnabled) {
+                        return handleAppointArmyCommander(sender, nation, args, WorldDynamicsEngine.getInstance());
+                    } else {
+                        sender.sendMessage(ChatColor.RED + WorldDynamicsEngine.getInstance().getLocaleMessage(WorldDynamicsEngine.getInstance().userLang, "unknownsub"));
+                        return true;
+                    }
                 case "enlistarmymember":
-                    return handleEnlistArmyMember(sender, nation, args, WorldDynamicsEngine.getInstance());
+                    if (WorldDynamicsEngine.getInstance().armyEnabled) {
+                        return handleEnlistArmyMember(sender, nation, args, WorldDynamicsEngine.getInstance());
+                    } else {
+                        sender.sendMessage(ChatColor.RED + WorldDynamicsEngine.getInstance().getLocaleMessage(WorldDynamicsEngine.getInstance().userLang, "unknownsub"));
+                        return true;
+                    }
                 case "dischargearmymember":
-                    return handleDischargeArmyMember(sender, nation, args, WorldDynamicsEngine.getInstance());
+                    if (WorldDynamicsEngine.getInstance().armyEnabled) {
+                        return handleDischargeArmyMember(sender, nation, args, WorldDynamicsEngine.getInstance());
+                    } else {
+                        sender.sendMessage(ChatColor.RED + WorldDynamicsEngine.getInstance().getLocaleMessage(WorldDynamicsEngine.getInstance().userLang, "unknownsub"));
+                        return true;
+                    }
                 case "adddiplomat":
-                    if (args.length < 4) {
-                        sender.sendMessage(ChatColor.RED + "Usage: /wde nation adddiplomat <username>");
+                    if (WorldDynamicsEngine.getInstance().govEnabled) {
+                        if (args.length < 4) {
+                            sender.sendMessage(ChatColor.RED + "Usage: /wde nation adddiplomat <username>");
+                            return true;
+                        }
+                        if (!hasNationAuthority(sender, nationManager)) {
+                            sender.sendMessage(ChatColor.RED + "You do not have the authority to perform this action.");
+                            return true;
+                        }
+                        return handleAddDiplomat(sender, args[3], residentManager);
+                    } else {
+                        sender.sendMessage(ChatColor.RED + WorldDynamicsEngine.getInstance().getLocaleMessage(WorldDynamicsEngine.getInstance().userLang, "unknownsub"));
                         return true;
                     }
-                    if (!hasNationAuthority(sender, nationManager)) {
-                        sender.sendMessage(ChatColor.RED + "You do not have the authority to perform this action.");
-                        return true;
-                    }
-                    return handleAddDiplomat(sender, args[3], residentManager);
-
                 case "removediplomat":
-                    if (args.length < 4) {
-                        sender.sendMessage(ChatColor.RED + "Usage: /wde nation removediplomat <username>");
+                    if (WorldDynamicsEngine.getInstance().govEnabled) {
+                        if (args.length < 4) {
+                            sender.sendMessage(ChatColor.RED + "Usage: /wde nation removediplomat <username>");
+                            return true;
+                        }
+                        if (hasNationAuthority(sender, nationManager)) {
+                            sender.sendMessage(ChatColor.RED + "You do not have the authority to perform this action.");
+                            return true;
+                        }
+                        return handleRemoveDiplomat(sender, args[3], residentManager);
+                    } else {
+                        sender.sendMessage(ChatColor.RED + WorldDynamicsEngine.getInstance().getLocaleMessage(WorldDynamicsEngine.getInstance().userLang, "unknownsub"));
                         return true;
                     }
-                    if (!hasNationAuthority(sender, nationManager)) {
-                        sender.sendMessage(ChatColor.RED + "You do not have the authority to perform this action.");
-                        return true;
-                    }
-                    return handleRemoveDiplomat(sender, args[3], residentManager);
                 default:
                     sender.sendMessage(ChatColor.RED + WorldDynamicsEngine.getInstance().getLocaleMessage(WorldDynamicsEngine.getInstance().userLang, "unknownsub"));
                     return true;

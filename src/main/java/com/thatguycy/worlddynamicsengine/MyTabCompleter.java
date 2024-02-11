@@ -14,6 +14,11 @@ import java.util.stream.Collectors;
 
 public class MyTabCompleter implements TabCompleter {
 
+    private OrgManager orgManager;
+
+    public MyTabCompleter(OrgManager orgManager) {
+        this.orgManager = orgManager;
+    }
     public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
         List<String> onlinePlayerNames = Bukkit.getOnlinePlayers().stream()
@@ -26,13 +31,14 @@ public class MyTabCompleter implements TabCompleter {
                 completions.add("docs");
                 completions.add("nation");
                 completions.add("diplomacy");
+                completions.add("org"); // Added 'org'
                 // Add more first-level options as needed
             } else if (args.length == 2 && args[0].equalsIgnoreCase("nation")) {
                 TownyUniverse.getInstance().getNations().forEach(nation -> completions.add(nation.getName()));
             } else if (args[0].equalsIgnoreCase("nation") && args.length == 3) {
                 completions.addAll(Arrays.asList("setgovtype", "setgovleader", "addgovmember", "kickgovmember",
                         "appointarmycommander", "enlistarmymember", "dischargearmymember",
-                        "adddiplomat", "removediplomat")); // Added adddiplomat and removediplomat
+                        "adddiplomat", "removediplomat"));
             } else if (args[0].equalsIgnoreCase("nation") && args.length == 4) {
                 switch (args[2].toLowerCase()) {
                     case "setgovtype":
@@ -44,18 +50,17 @@ public class MyTabCompleter implements TabCompleter {
                     case "appointarmycommander":
                     case "enlistarmymember":
                     case "dischargearmymember":
-                    case "adddiplomat":     // Added adddiplomat case
-                    case "removediplomat":  // Added removediplomat case
+                    case "adddiplomat":
+                    case "removediplomat":
                         completions.addAll(onlinePlayerNames);
                         break;
                 }
             } else if (args[0].equalsIgnoreCase("diplomacy") && args.length == 2) {
-                completions.addAll(Arrays.asList("setrelation", "trading", "viewtrading", "relations", "visit")); // Added "visit"
+                completions.addAll(Arrays.asList("setrelation", "trading", "viewtrading", "relations", "visit"));
             } else if (args[0].equalsIgnoreCase("diplomacy") && args.length == 3) {
                 if (args[1].equalsIgnoreCase("setrelation") || args[1].equalsIgnoreCase("trading")) {
                     TownyUniverse.getInstance().getNations().forEach(nation -> completions.add(nation.getName()));
                 } else if (args[1].equalsIgnoreCase("visit")) {
-                    // Suggest nation names for visiting
                     TownyUniverse.getInstance().getNations().forEach(nation -> completions.add(nation.getName()));
                 }
             } else if (args[0].equalsIgnoreCase("diplomacy") && args.length == 4) {
@@ -64,9 +69,24 @@ public class MyTabCompleter implements TabCompleter {
                 } else if (args[1].equalsIgnoreCase("trading")) {
                     completions.addAll(Arrays.asList("enabled", "disabled"));
                 }
+            }  else if (args.length == 3 && args[0].equalsIgnoreCase("org")) {
+                completions.addAll(Arrays.asList("create", "dissolve", "addmember", "kickmember", "deposit", "withdraw", "leave", "info"));
+            } else if (args.length == 2 && args[0].equalsIgnoreCase("org")) {
+                // Fetch organization names dynamically from OrgManager
+                try {
+                    List<String> orgNames = orgManager.getAllOrganizationNames();
+                    completions.addAll(orgNames);
+                } catch (Exception e) {
+                    // Log or handle any errors that might occur during retrieval
+                }
+            } else if (args.length == 4 && args[0].equalsIgnoreCase("org")) {
+                if (args[2].equalsIgnoreCase("addmember") || args[2].equalsIgnoreCase("kickmember")) {
+                    completions.addAll(onlinePlayerNames);
+                }
             }
         }
 
         return completions;
     }
+
 }

@@ -46,6 +46,11 @@ public class DiplomacyCommand implements CommandExecutor {
                     return true;
                 }
 
+                if (!WorldDynamicsEngine.getInstance().govEnabled) {
+                    sender.sendMessage(ChatColor.RED + "Unknown subcommand.");
+                    return true;
+                }
+
                 switch (args[1].toLowerCase()) {
                     case "viewtrading":
                         // handleViewTradingRelations requires CommandSender, nationName, and plugin instance
@@ -269,9 +274,9 @@ public class DiplomacyCommand implements CommandExecutor {
         }
 
         // Calculate price based on diplomatic status
-        int price = 1000; // Default price for Friendly/Neutral/None
+        int price = (int) WorldDynamicsEngine.getInstance().diplomacyVisitCostNeutralNone;// Default price for Friendly/Neutral/None
         if ("friendly".equalsIgnoreCase(statusToDestination) && "friendly".equalsIgnoreCase(statusFromDestination)) {
-            price = 750; // Reduced price for mutual friendly status
+            price = (int) WorldDynamicsEngine.getInstance().diplomacyVisitCostFriendly; // Reduced price for mutual friendly status
         } else if (Boolean.TRUE.equals(diplomatNation.getTradingStatus().get(destinationNationName))
                 && Boolean.TRUE.equals(destinationNation.getTradingStatus().get(diplomatNationName))) {
             price = 0; // Free for mutual trade status

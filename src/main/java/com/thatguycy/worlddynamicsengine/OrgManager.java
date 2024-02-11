@@ -7,9 +7,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class OrgManager {
 
@@ -66,8 +64,59 @@ public class OrgManager {
         return organizations.get(organizationName);
     }
 
+    public List<String> getAllOrganizationNames() {
+        List<String> orgNames = new ArrayList<>();
+        if (organizations.size() > 0) { // Ensure there are organizations to return
+            orgNames.addAll(organizations.keySet());
+        }
+        return orgNames;
+    }
+
     public void addOrganization(WDEorg organization) {
         organizations.put(organization.getOrganizationName(), organization);
+    }
+
+    public List<WDEorg> getAllOrganizations() {
+        return new ArrayList<>(organizations.values()); // Return a copy of the organizations
+    }
+
+    public void updateBalance(WDEorg org, double newBalance) {
+        // Error Handling (Ensure the organization  actually exists...)
+        if (!organizations.containsKey(org.getOrganizationName())) {
+            // Log or handle  the scenario where the org isn't found...
+            return;
+        }
+
+        org.setBalance(newBalance);
+    }
+
+    public void removeOrganization(WDEorg organization) {
+        organizations.remove(organization.getOrganizationName(), organization);
+    }
+
+    // Membership Management
+    public void addMember(WDEorg org, UUID playerUUID) {
+        org.getMembers().add(playerUUID);
+    }
+
+    public boolean removeMember(WDEorg org, UUID playerUUID) {
+        org.getMembers().remove(playerUUID);
+        return true;
+    }
+
+
+    public boolean isMember(WDEorg org, UUID playerUUID) {
+        return org.getMembers().contains(playerUUID);
+    }
+
+    // Finance Management
+    public void setBalance(WDEorg org, double newBalance) {
+        org.setBalance(newBalance);
+    }
+
+    // Helper/Retrieval Methods
+    public boolean organizationExists(String orgName) {
+        return organizations.containsKey(orgName);
     }
 
     public void enableAutoSave() {

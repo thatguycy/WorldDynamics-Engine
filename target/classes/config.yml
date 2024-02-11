@@ -15,6 +15,9 @@ govEnabled: true
 # Toggle for enabling or disabling organization functionalities.
 orgEnabled: true
 
+# Toggle for enabling or disabling army functionalities.
+armyEnabled: true
+
 # Cost for visiting a nation with a diplomatic status of neutral or none.
 diplomacyVisitCostNeutralNone: 1000.00
 
@@ -33,5 +36,5 @@ orgBusinessTownLocked: false
 # Limit of organizations a resident can be part of. Set to -1 for no limit.
 residentOrgLimit: -1
 
-# Language (en = English)
+# Language (en = English) // Locale support is planned for a future release.
 locale: en

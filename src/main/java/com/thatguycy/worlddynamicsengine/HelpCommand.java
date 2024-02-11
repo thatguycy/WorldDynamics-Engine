@@ -33,6 +33,16 @@ public class HelpCommand implements CommandExecutor {
         sender.sendMessage(ChatColor.YELLOW + "/wde diplomacy relations <nation>" + ChatColor.WHITE + " - View diplomatic relations with other nations.");
         sender.sendMessage(ChatColor.YELLOW + "/wde diplomacy visit <nation>" + ChatColor.WHITE + " - Visit another nation as a diplomat.");
 
+        sender.sendMessage(ChatColor.AQUA + "--------[ " + ChatColor.BLUE + "Organization Commands" + ChatColor.AQUA + " ]--------");
+        sender.sendMessage(ChatColor.YELLOW + "/wde org <orgname> create" + ChatColor.WHITE + " - Create a new organization.");
+        sender.sendMessage(ChatColor.YELLOW + "/wde org <orgname> dissolve" + ChatColor.WHITE + " - Dissolve an organization (leader only).");
+        sender.sendMessage(ChatColor.YELLOW + "/wde org <orgname> addmember <playername>" + ChatColor.WHITE + " - Add a player to an organization (leader only).");
+        sender.sendMessage(ChatColor.YELLOW + "/wde org <orgname> kickmember <playername>" + ChatColor.WHITE + " - Remove a player from an organization (leader only).");
+        sender.sendMessage(ChatColor.YELLOW + "/wde org <orgname> deposit <amount>" + ChatColor.WHITE + " - Deposit funds into an organization's treasury.");
+        sender.sendMessage(ChatColor.YELLOW + "/wde org <orgname> withdraw <amount>" + ChatColor.WHITE + " - Withdraw funds from an organization's treasury (leader only).");
+        sender.sendMessage(ChatColor.YELLOW + "/wde org <orgname> leave" + ChatColor.WHITE + " - Leave an organization.");
+        sender.sendMessage(ChatColor.YELLOW + "/wde org <orgname> info" + ChatColor.WHITE + " - View information about an organization.");
+
         return true;
     }
 }

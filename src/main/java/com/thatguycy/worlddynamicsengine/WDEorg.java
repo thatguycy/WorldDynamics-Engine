@@ -13,6 +13,8 @@ public class WDEorg implements ConfigurationSerializable {
     private double balance;
     private Set<String> flags;
     private Map<String, Object> settings;
+    private HashMap<UUID, Long> pendingInvites;
+
 
     public WDEorg(String organizationName, UUID leaderUUID) {
         this.organizationName = organizationName;
@@ -21,6 +23,7 @@ public class WDEorg implements ConfigurationSerializable {
         this.balance = 0.0;
         this.flags = new HashSet<>();
         this.settings = new HashMap<>();
+        this.pendingInvites = new HashMap<>();
     }
 
     // Constructor used for deserialization
@@ -46,6 +49,11 @@ public class WDEorg implements ConfigurationSerializable {
         return map;
     }
 
+    public HashMap<UUID, Long> getPendingInvites() {
+
+        return pendingInvites;
+    }
+
     // Getters and Setters
     public String getOrganizationName() {
         return organizationName;
@@ -63,7 +71,7 @@ public class WDEorg implements ConfigurationSerializable {
         this.leaderUUID = leaderUUID;
     }
 
-    public Set<UUID> getMembers() {
+    public Set<UUID>  getMembers() {
         return members;
     }
 

@@ -28,7 +28,7 @@ import java.util.Map;
 public class WorldDynamicsEngine extends JavaPlugin {
     private static WorldDynamicsEngine instance;
     private CommandHandler commandHandler;
-    private Economy economy;
+    Economy economy;
     private NationManager nationManager;
     private ResidentManager residentManager;
     private OrgManager orgManager;
@@ -36,6 +36,7 @@ public class WorldDynamicsEngine extends JavaPlugin {
     public String framework;
     public boolean govEnabled;
     public boolean orgEnabled;
+    public boolean armyEnabled;
     public double diplomacyVisitCostNeutralNone;
     public double diplomacyVisitCostFriendly;
     public double diplomacyFormCostTrade;
@@ -62,9 +63,10 @@ public class WorldDynamicsEngine extends JavaPlugin {
         loadLocales();
 
         // Config Stuff
-
         createConfig();
         getConfigSettings();
+
+        getLogger().info(framework + orgEnabled + govEnabled + armyEnabled + diplomacyVisitCostNeutralNone + diplomacyVisitCostFriendly + diplomacyFormCostTrade + orgFormationCost + orgBusinessTownLocked + residentOrgLimit + userLang);
 
         if (!checkDependencies()) {
             getLogger().severe("Missing required dependencies. Disabling WorldDynamics Engine.");
@@ -77,7 +79,7 @@ public class WorldDynamicsEngine extends JavaPlugin {
                 getLogger().info("=================== WorldDynamics Engine ===================");
                 getLogger().info("Author: thatguycy");
                 getLogger().info("Contributor(s): 1ByteBit");
-                getLogger().info("Version: 0.2.0");
+                getLogger().info("Version: 0.2.1");
                 getLogger().info("Latest Version: " + fetchLatestVersion());
                 getLogger().info("Crafting Complex Worlds, Shaping Geopolitical Adventures.");
                 getLogger().info("============================================================");
@@ -88,9 +90,10 @@ public class WorldDynamicsEngine extends JavaPlugin {
         commandHandler.registerSubCommand("help", new HelpCommand());
         commandHandler.registerSubCommand("docs", new DocCommand());
         commandHandler.registerSubCommand("nation", new NationCommand(nationManager, residentManager));
+        commandHandler.registerSubCommand("org", new OrgCommand(nationManager, residentManager, orgManager, economy));
         commandHandler.registerSubCommand("diplomacy", new DiplomacyCommand(nationManager, residentManager, economy));
 
-        this.getCommand("wde").setTabCompleter(new MyTabCompleter());
+        this.getCommand("wde").setTabCompleter(new MyTabCompleter(orgManager));
 
         // Misc
         nationManager.syncWithTowny();
@@ -125,6 +128,7 @@ public class WorldDynamicsEngine extends JavaPlugin {
         framework = getConfig().getString("framework");
         govEnabled = getConfig().getBoolean("govEnabled");
         orgEnabled = getConfig().getBoolean("orgEnabled");
+        armyEnabled = getConfig().getBoolean("armyEnabled");
         diplomacyVisitCostNeutralNone = getConfig().getDouble("diplomacyVisitCostNeutralNone");
         diplomacyVisitCostFriendly = getConfig().getDouble("diplomacyVisitCostFriendly");
         diplomacyFormCostTrade = getConfig().getDouble("diplomacyFormCostTrade");
