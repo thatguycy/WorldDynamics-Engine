@@ -5,6 +5,8 @@
 
 **|** [**Documentation**](https://docs.thatguycy.com/) **|** [**Spigot**](https://www.spigotmc.org/resources/worlddynamics-engine.114509/) **|** [**Modrinth**](https://modrinth.com/plugin/worlddynamics-engine) **|**
 
+### PLEASE USE THE NEW DISCORD: https://discord.gg/3gdWgBwJjN
+
 ## Description
 
 More than just a Towny Addon, it's a **Towny Essential Upgrade**!
@@ -27,33 +29,13 @@ WorldDynamics Engine is a sophisticated roleplay plugin designed for geopolitica
         <th style="width:221%" colspan="2"><b>Servers using WDE</b></th>
     </tr>
     <tr>
-        <td><a>ExorEarth</a></td>
-        <td>exorearth.thatguycy.com</td>
+        <td>None</td>
+        <td>None</td>
     </tr>
 </table>
 
 **Open an issue request to have your server added here!**
 
-<table>
-    <tr><th>Minecraft Version</th><th>Towny Version</th><th>WDE Version</th></tr>
-    <tr align=center><td>MC 1.20.*</td><td rowspan=5>Use <a href=https://github.com/TownyAdvanced/Towny/releases/tag/0.100.1.0>0.100.1.0</a> or <a href=https://github.com/TownyAdvanced/Towny/releases>the Latest Pre-Release.</a></td><td><a href= https://github.com/thatguycy/WorldDynamics-Engine>WDE Version 0.1.*</td></tr>
-    <tr align=center><td>MC 1.19.*</td><td rowspan="4">Untested</td></tr>
-    <tr align=center><td>MC 1.18.*</td>
-    <tr align=center><td>MC 1.17.*</td>
-    <tr align=center><td>MC 1.16.*</td>
-        <tr align=center><td>MC 1.15.*</td><td rowspan=2><a href=https://github.com/TownyAdvanced/Towny/releases/tag/0.98.1.0>0.98.1.0</a></td><td rowspan="2">TownyPolitics (Unavailable)</td></tr>
-    <tr align=center><td>MC 1.14.4</td>
-    <tr align=center><td>MC 1.13.2</td><td><a href=https://github.com/TownyAdvanced/Towny/releases/tag/0.96.2.0for1.13.2>0.96.2.0 for 1.13.2</a><td rowspan="10">Not Supported</td></tr>
-    <tr align=center><td>MC 1.12.2</td><td><a href=https://github.com/TownyAdvanced/Towny/releases/tag/0.97.0.0for1.12.2>0.97.0.0 for 1.12.2</a>
-    <tr align=center><td>MC 1.11.2</td><td><a href=https://www.dropbox.com/s/cfpm4iy0sbzmti4/Towny_Advanced%200.93.1.0%20for%20MC%201.11.2.zip?dl=0>0.93.1.0 for 1.11.2</a>
-    <tr align=center><td>MC 1.10.2</td><td><a href=https://www.dropbox.com/s/x2i3wqaj8n6gdh1/Towny_Advanced%200.93.1.0%20for%20MC%201.10.2.rar?dl=0>0.93.1.0 for 1.10.2</a></td>
-    <tr align=center><td>MC 1.9.4</td><td><a href=https://www.dropbox.com/s/eh81i4618bfmvjm/Towny_Advanced%200.93.1.0%20for%20MC%201.9.4.zip?dl=0>0.93.1.0 for 1.9.4</a></td>
-    <tr align=center><td>MC 1.8.9</td><td><a href=https://www.dropbox.com/s/e83206cfed61hsw/Towny_Advanced%200.93.1.0a%20for%20MC%201.8.9.zip?dl=0>0.93.1.0a for 1.8.9</a></td>
-    <tr align=center><td>MC 1.7.10</td><td><a href=https://www.dropbox.com/s/vmf2g5bj7ab4coo/Towny_Advanced%200.92.0.0%20-%20MC%201.7.10.zip?dl=0>0.92.0.0 for 1.7.10</a></td>
-    <tr align=center><td>MC 1.6.4</td><td><a href=https://www.dropbox.com/s/5n9r60ivldh5i8f/Towny_Advanced%200.88.0.0%20%281.6.4%29.zip?dl=0>0.88.0.0 for 1.6.4</a></td>
-    <tr align=center><td>MC 1.5.2</td><td><a href=https://www.dropbox.com/s/euydq4qsljheoms/Towny_Advanced%200.88.0.0%20%281.5.2%29.zip?dl=0>0.88.0.0 for 1.5.2</a>
-    <tr align=center><td>MC 1.2.5</td><td><a href=https://www.dropbox.com/s/xstn1vdexxc1k5q/Towny_Advanced%200.82.0.0%20for%201.2.5.zip?dl=0>0.82.0.0</a></td>
-</table>
 
 ## Usage Statistics
 
@@ -88,7 +70,6 @@ Instructions on how to install the WorldDynamics Engine plugin.
 - **2)** Install [TownyAdvanced](https://www.spigotmc.org/resources/towny-advanced.72694/) and [Vault](https://www.spigotmc.org/resources/vault.34315/), these are both **essential**.
 
 ## Development
-![](https://i.imgur.com/jddoKaq.png)
 
 **WorldDynamics Engine** is actively developed by me, ThatGuyCy, or Harvey! I do this in my own time, for free, while in full-time education and working, so it's certainly alot! While I'm trying to provide the best support for plugin and the userbase I can, I apologise if I can't do everything all at once. **Exor**, previously ExorEarth or ExorMC, is my personal Minecraft Server that inspired this plugin, since becoming a server, it's now turned into a development partnership between me and Phantom, the old manager of the server, you'll probably see him floating around on here, although he doesn't work on the plugin directly, he manages user relations and triaging bug reports, etc. If you feel so kind, feel free to sponsor us! Go ahead and press the sponsor button at the top of the page. If you want to help us another way, star this repository, contribute if you can, and leave us 5 stars on [spigot](https://www.spigotmc.org/resources/worlddynamics-engine.114509/).
 
