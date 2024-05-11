@@ -1,4 +1,4 @@
-![](https://github.com/thatguycy/WorldDynamics-Engine/assets/33783071/0fc3c5a9-2ccd-4385-b5e4-157f3bd78309)
+![](https://i.imgur.com/t5urpQz.png)
 
 [![Build Status](https://app.travis-ci.com/thatguycy/WorldDynamics-Engine.svg?branch=master)](https://app.travis-ci.com/thatguycy/WorldDynamics-Engine) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) ![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads-pre/thatguycy/WorldDynamics-Engine/latest/total)
 ![GitHub Repo stars](https://img.shields.io/github/stars/thatguycy/WorldDynamics-Engine)
