@@ -75,4 +75,4 @@ Instructions on how to install the WorldDynamics Engine plugin.
 
 ## License
 
-This project is licensed under the [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) - see the [LICENSE](https://github.com/thatguycy/WorldDynamics-Engine/blob/main/LICENSE) file for details.
+This project is licensed under the [![License](https://img.shields.io/badge/License-OSPL-blue)](#license) - see the [LICENSE](https://github.com/thatguycy/WorldDynamics-Engine/blob/main/LICENSE) file for details.
