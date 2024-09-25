@@ -1,11 +1,12 @@
+> [!CAUTION]
+> WorldDynamics Engine is currently being reworked under a new development team which I am apart of, for LTS use, please use [**v1.7**](https://www.spigotmc.org/resources/worlddynamics-engine.114509/update?update=530459)!
+
 ![](https://i.imgur.com/t5urpQz.png)
 
 [![Build Status](https://app.travis-ci.com/thatguycy/WorldDynamics-Engine.svg?branch=master)](https://app.travis-ci.com/thatguycy/WorldDynamics-Engine) [![License](https://img.shields.io/badge/License-OSPL-blue)](#license) ![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads-pre/thatguycy/WorldDynamics-Engine/latest/total)
 ![GitHub Repo stars](https://img.shields.io/github/stars/thatguycy/WorldDynamics-Engine)
 
 **|** [**Documentation**](https://docs.thatguycy.com/) **|** [**Spigot**](https://www.spigotmc.org/resources/worlddynamics-engine.114509/) **|** [**Modrinth**](https://modrinth.com/plugin/worlddynamics-engine) **|**
-
-### PLEASE USE THE NEW DISCORD: https://discord.gg/3gdWgBwJjN
 
 ## Description
 
