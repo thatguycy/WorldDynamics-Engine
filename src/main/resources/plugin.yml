@@ -1,0 +1,4 @@
+name: WorldDynamicsEngine
+version: '3.0.0'
+main: org.nebulaone.InitClass
+api-version: '1.21'
