@@ -2,3 +2,11 @@ name: WorldDynamicsEngine
 version: '3.0.0'
 main: org.nebulaone.InitClass
 api-version: '1.21'
+depend: [Towny]
+commands:
+  wde:
+    description: Main command for WorldDynamics Engine.
+    usage: /<command>
+    aliases: [worlddynamicsengine]
+    permission: worlddynamicsengine.use
+    permission-message: You do not have permission to use this command.
